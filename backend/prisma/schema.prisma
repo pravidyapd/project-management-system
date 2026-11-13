@@ -8,6 +8,20 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  password      String?
+  googleId      String?        @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  projects      Project[]
+  teamMembers   TeamMember[]
+  notifications Notification[]
+}
+
 model Project {
   id          Int      @id @default(autoincrement())
   name        String
@@ -15,6 +29,9 @@ model Project {
   status      String   @default("Planning")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  userId      Int?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   tasks       Task[]
 }
@@ -39,6 +56,9 @@ model TeamMember {
   role      String   @default("Developer")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
@@ -48,6 +68,7 @@ model Notification {
   type        String   @default("system")
   read        Boolean  @default(false)
   createdAt   DateTime @default(now())
+
+  userId      Int?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
-
-

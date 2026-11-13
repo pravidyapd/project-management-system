@@ -1,26 +1,42 @@
 
-import { Router, Request, Response } from "express";
+import { Router, Response } from "express";
 import { db } from "../prisma/db";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 const router = Router();
 
-// Helper function to create notifications
-async function createNotification(title: string, description: string) {
+// Helper function to create user-specific notifications
+async function createNotification(
+  title: string,
+  description: string,
+  userId: number
+) {
   try {
     await db.orm.public.Notification.create({
       title,
       description,
       type: "task",
+      userId,
     });
   } catch (error) {
     console.error("Task notification failed:", error);
   }
 }
 
-// GET all tasks
-router.get("/", async (req: Request, res: Response) => {
+// GET all tasks belonging to the logged-in user's projects
+router.get("/", async (req: AuthRequest, res: Response) => {
   try {
-    const tasks = await db.orm.public.Task.all();
+    const projects = await db.orm.public.Project
+      .where({ userId: req.userId! })
+      .all();
+
+    const projectIds = projects.map((project) => project.id);
+
+    const allTasks = await db.orm.public.Task.all();
+
+    const tasks = allTasks.filter((task) =>
+      projectIds.includes(task.projectId)
+    );
 
     return res.json({
       success: true,
@@ -36,7 +52,7 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 // CREATE task
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", async (req: AuthRequest, res: Response) => {
   try {
     const { title, description, status, projectId, dueDate } = req.body;
 
@@ -56,6 +72,21 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
 
+    // Verify that the project belongs to the logged-in user
+    const project = await db.orm.public.Project
+      .where({
+        id: parsedProjectId,
+        userId: req.userId!,
+      })
+      .first();
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
     const newTask = await db.orm.public.Task.create({
       title: title.trim(),
       description: description || null,
@@ -66,7 +97,8 @@ router.post("/", async (req: Request, res: Response) => {
 
     await createNotification(
       "New Task Created",
-      `A new task "${newTask.title}" has been created.`
+      `A new task "${newTask.title}" has been created.`,
+      req.userId!
     );
 
     return res.status(201).json({
@@ -84,7 +116,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // UPDATE task
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", async (req: AuthRequest, res: Response) => {
   try {
     const taskId = Number(req.params.id);
     const { title, description, status, dueDate } = req.body;
@@ -93,6 +125,32 @@ router.put("/:id", async (req: Request, res: Response) => {
       return res.status(400).json({
         success: false,
         message: "Invalid task ID",
+      });
+    }
+
+    // Find task and verify project ownership
+    const existingTask = await db.orm.public.Task
+      .where({ id: taskId })
+      .first();
+
+    if (!existingTask) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    const project = await db.orm.public.Project
+      .where({
+        id: existingTask.projectId,
+        userId: req.userId!,
+      })
+      .first();
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
       });
     }
 
@@ -123,7 +181,16 @@ router.put("/:id", async (req: Request, res: Response) => {
     }
 
     if (dueDate !== undefined) {
-      updates.dueDate = dueDate ? new Date(dueDate) : null;
+      const parsedDate = dueDate ? new Date(dueDate) : null;
+
+      if (parsedDate && isNaN(parsedDate.getTime())) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid due date",
+        });
+      }
+
+      updates.dueDate = parsedDate;
     }
 
     if (Object.keys(updates).length === 0) {
@@ -147,12 +214,14 @@ router.put("/:id", async (req: Request, res: Response) => {
     if (status !== undefined) {
       await createNotification(
         "Task Status Updated",
-        `The status of task "${updatedTask.title}" was updated to "${status}".`
+        `The status of task "${updatedTask.title}" was updated to "${status}".`,
+        req.userId!
       );
     } else {
       await createNotification(
         "Task Updated",
-        `Task "${updatedTask.title}" has been updated.`
+        `Task "${updatedTask.title}" has been updated.`,
+        req.userId!
       );
     }
 
@@ -171,7 +240,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 // DELETE task
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", async (req: AuthRequest, res: Response) => {
   try {
     const taskId = Number(req.params.id);
 
@@ -179,6 +248,32 @@ router.delete("/:id", async (req: Request, res: Response) => {
       return res.status(400).json({
         success: false,
         message: "Invalid task ID",
+      });
+    }
+
+    // Find task and verify project ownership
+    const existingTask = await db.orm.public.Task
+      .where({ id: taskId })
+      .first();
+
+    if (!existingTask) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    const project = await db.orm.public.Project
+      .where({
+        id: existingTask.projectId,
+        userId: req.userId!,
+      })
+      .first();
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
       });
     }
 
@@ -195,7 +290,8 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
     await createNotification(
       "Task Deleted",
-      `Task "${deletedTask.title}" has been deleted.`
+      `Task "${deletedTask.title}" has been deleted.`,
+      req.userId!
     );
 
     return res.json({

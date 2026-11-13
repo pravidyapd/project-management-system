@@ -1,26 +1,34 @@
 
-import { Router, Request, Response } from "express";
+import { Router, Response } from "express";
 import { db } from "../prisma/db";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 const router = Router();
 
-// Helper function to create notifications
-async function createNotification(title: string, description: string) {
+// Helper function to create user-specific notifications
+async function createNotification(
+  title: string,
+  description: string,
+  userId: number
+) {
   try {
     await db.orm.public.Notification.create({
       title,
       description,
       type: "system",
+      userId,
     });
   } catch (error) {
     console.error("Failed to create team notification:", error);
   }
 }
 
-// GET all team members
-router.get("/", async (req: Request, res: Response) => {
+// GET all team members belonging to the logged-in user
+router.get("/", async (req: AuthRequest, res: Response) => {
   try {
-    const members = await db.orm.public.TeamMember.all();
+    const members = await db.orm.public.TeamMember
+      .where({ userId: req.userId! })
+      .all();
 
     return res.json({
       success: true,
@@ -36,7 +44,7 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 // CREATE team member
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", async (req: AuthRequest, res: Response) => {
   try {
     const { name, email, role } = req.body;
 
@@ -58,11 +66,13 @@ router.post("/", async (req: Request, res: Response) => {
       name: name.trim(),
       email: email.trim().toLowerCase(),
       role: role.trim(),
+      userId: req.userId!,
     });
 
     await createNotification(
       "New Team Member Added",
-      `${member.name} has been added to the team as ${member.role}.`
+      `${member.name} has been added to the team as ${member.role}.`,
+      req.userId!
     );
 
     return res.status(201).json({
@@ -80,7 +90,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // UPDATE team member
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", async (req: AuthRequest, res: Response) => {
   try {
     const id = Number(req.params.id);
     const { name, email, role } = req.body;
@@ -107,7 +117,10 @@ router.put("/:id", async (req: Request, res: Response) => {
     }
 
     const member = await db.orm.public.TeamMember
-      .where({ id })
+      .where({
+        id,
+        userId: req.userId!,
+      })
       .update({
         name: name.trim(),
         email: email.trim().toLowerCase(),
@@ -123,7 +136,8 @@ router.put("/:id", async (req: Request, res: Response) => {
 
     await createNotification(
       "Team Member Updated",
-      `${member.name}'s team details have been updated.`
+      `${member.name}'s team details have been updated.`,
+      req.userId!
     );
 
     return res.json({
@@ -141,7 +155,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 // DELETE team member
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", async (req: AuthRequest, res: Response) => {
   try {
     const id = Number(req.params.id);
 
@@ -153,7 +167,10 @@ router.delete("/:id", async (req: Request, res: Response) => {
     }
 
     const deletedMember = await db.orm.public.TeamMember
-      .where({ id })
+      .where({
+        id,
+        userId: req.userId!,
+      })
       .delete();
 
     if (!deletedMember) {
@@ -165,7 +182,8 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
     await createNotification(
       "Team Member Removed",
-      `Team member #${id} has been removed from the team.`
+      `Team member #${id} has been removed from the team.`,
+      req.userId!
     );
 
     return res.json({

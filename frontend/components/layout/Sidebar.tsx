@@ -3,7 +3,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import {
   LayoutDashboard,
@@ -16,6 +17,7 @@ import {
   Menu,
   X,
   BriefcaseBusiness,
+  LogOut,
 } from "lucide-react";
 
 const menuItems = [
@@ -34,18 +36,56 @@ const API =
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [userName, setUserName] = useState("User");
 
   useEffect(() => {
     setMounted(true);
+
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setUserName(user.name || "User");
+      } catch {
+        setUserName("User");
+      }
+    }
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    toast.success("Logged out successfully");
+    router.replace("/login");
+  };
 
   const fetchUnreadCount = useCallback(async () => {
     try {
-      const response = await fetch(API);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setUnreadCount(0);
+        return;
+      }
+
+      const response = await fetch(API, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        setUnreadCount(0);
+        return;
+      }
+
       const result = await response.json();
 
       if (response.ok && result.success) {
@@ -136,16 +176,27 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Profile */}
-        <div className="hidden shrink-0 items-center gap-3 rounded-full border border-white/[0.07] bg-[#171717] py-2 pl-2 pr-4 lg:flex">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-orange-700 font-bold text-black">
-            P
+        {/* Profile and Logout */}
+        <div className="hidden shrink-0 items-center gap-3 lg:flex">
+          <div className="flex items-center gap-3 rounded-full border border-white/[0.07] bg-[#171717] py-2 pl-2 pr-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-orange-700 font-bold text-black">
+              {userName.charAt(0).toUpperCase()}
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold text-white">{userName}</p>
+              <p className="text-[10px] text-zinc-500">Workspace Admin</p>
+            </div>
           </div>
 
-          <div>
-            <p className="text-sm font-semibold text-white">Pravidya</p>
-            <p className="text-[10px] text-zinc-500">Workspace Admin</p>
-          </div>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex items-center gap-2 rounded-full border border-white/10 bg-[#171717] px-4 py-3 text-sm font-medium text-zinc-400 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+          >
+            <LogOut size={17} />
+            Logout
+          </button>
         </div>
 
         {/* Mobile Menu Button */}
@@ -193,14 +244,27 @@ export default function Sidebar() {
             })}
           </nav>
 
-          <div className="mt-4 flex items-center gap-3 border-t border-white/[0.07] pt-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 font-bold text-black">
-              P
+          {/* Mobile Profile */}
+          <div className="mt-4 flex items-center justify-between border-t border-white/[0.07] pt-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 font-bold text-black">
+                {userName.charAt(0).toUpperCase()}
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-white">{userName}</p>
+                <p className="text-xs text-zinc-500">Workspace Admin</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-semibold text-white">Pravidya</p>
-              <p className="text-xs text-zinc-500">Workspace Admin</p>
-            </div>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex items-center gap-2 rounded-lg bg-red-500/10 px-3 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/20"
+            >
+              <LogOut size={16} />
+              Logout
+            </button>
           </div>
         </div>
       )}

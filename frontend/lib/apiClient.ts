@@ -9,12 +9,24 @@ export async function apiRequest<T>(
   let response: Response;
 
   try {
+    const headers = new Headers(options.headers);
+
+    if (options.body && !headers.has("Content-Type")) {
+      headers.set("Content-Type", "application/json");
+    }
+
+    // Attach the logged-in user's token
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+    }
+
     response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
-      headers: {
-        ...(options.body ? { "Content-Type": "application/json" } : {}),
-        ...options.headers,
-      },
+      headers,
     });
   } catch {
     throw new Error(

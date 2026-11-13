@@ -1,26 +1,34 @@
 
-import { Router, Request, Response } from "express";
+import { Router, Response } from "express";
 import { db } from "../prisma/db";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 const router = Router();
 
-// Helper function to create notifications
-async function createNotification(title: string, description: string) {
+// Helper function to create user-specific notifications
+async function createNotification(
+  title: string,
+  description: string,
+  userId: number
+) {
   try {
     await db.orm.public.Notification.create({
       title,
       description,
       type: "project",
+      userId,
     });
   } catch (error) {
     console.error("Failed to create project notification:", error);
   }
 }
 
-// GET all projects
-router.get("/", async (req: Request, res: Response) => {
+// GET all projects belonging to the logged-in user
+router.get("/", async (req: AuthRequest, res: Response) => {
   try {
-    const projects = await db.orm.public.Project.all();
+    const projects = await db.orm.public.Project
+      .where({ userId: req.userId! })
+      .all();
 
     return res.json({
       success: true,
@@ -36,7 +44,7 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 // CREATE project
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", async (req: AuthRequest, res: Response) => {
   try {
     const { name, description, status } = req.body;
 
@@ -51,11 +59,13 @@ router.post("/", async (req: Request, res: Response) => {
       name: name.trim(),
       description: description || null,
       status: status || "Planning",
+      userId: req.userId!,
     });
 
     await createNotification(
       "New Project Created",
-      `A new project "${newProject.name}" has been created.`
+      `A new project "${newProject.name}" has been created.`,
+      req.userId!
     );
 
     return res.status(201).json({
@@ -73,7 +83,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // UPDATE project
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", async (req: AuthRequest, res: Response) => {
   try {
     const projectId = Number(req.params.id);
 
@@ -99,6 +109,7 @@ router.put("/:id", async (req: Request, res: Response) => {
           message: "Project name cannot be empty",
         });
       }
+
       updates.name = name.trim();
     }
 
@@ -118,7 +129,10 @@ router.put("/:id", async (req: Request, res: Response) => {
     }
 
     const updatedProject = await db.orm.public.Project
-      .where({ id: projectId })
+      .where({
+        id: projectId,
+        userId: req.userId!,
+      })
       .update(updates);
 
     if (!updatedProject) {
@@ -130,7 +144,8 @@ router.put("/:id", async (req: Request, res: Response) => {
 
     await createNotification(
       "Project Updated",
-      `The project "${updatedProject.name}" has been updated.`
+      `The project "${updatedProject.name}" has been updated.`,
+      req.userId!
     );
 
     return res.json({
@@ -148,7 +163,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 // DELETE project
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", async (req: AuthRequest, res: Response) => {
   try {
     const projectId = Number(req.params.id);
 
@@ -160,7 +175,10 @@ router.delete("/:id", async (req: Request, res: Response) => {
     }
 
     const deletedProject = await db.orm.public.Project
-      .where({ id: projectId })
+      .where({
+        id: projectId,
+        userId: req.userId!,
+      })
       .delete();
 
     if (!deletedProject) {
@@ -172,7 +190,8 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
     await createNotification(
       "Project Deleted",
-      `Project #${projectId} has been deleted.`
+      `Project #${projectId} has been deleted.`,
+      req.userId!
     );
 
     return res.json({
