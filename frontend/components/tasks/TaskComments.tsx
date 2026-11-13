@@ -34,6 +34,20 @@ export default function TaskComments({
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [onClose]);
+
   const fetchComments = async () => {
     try {
       const response = await getComments(taskId);
@@ -103,11 +117,16 @@ export default function TaskComments({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-      <div className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#171717] shadow-2xl">
-
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+      onMouseDown={onClose}
+    >
+      <div
+        className="page-enter flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#171717] shadow-2xl shadow-black/50"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 p-5">
+        <div className="flex items-center justify-between border-b border-white/10 bg-[#1c1c1c] p-5">
           <div>
             <div className="flex items-center gap-2">
               <MessageSquare size={19} className="text-orange-400" />
@@ -125,7 +144,7 @@ export default function TaskComments({
             type="button"
             onClick={onClose}
             aria-label="Close comments"
-            className="rounded-full p-2 text-zinc-400 transition hover:bg-white/10 hover:text-white"
+            className="rounded-full p-2 text-zinc-400 transition-all hover:bg-orange-500/10 hover:text-orange-400"
           >
             <X size={20} />
           </button>

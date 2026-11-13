@@ -139,6 +139,14 @@ router.post(
           taskId,
         });
 
+      // Create notification for the logged-in user
+      await db.orm.public.Notification.create({
+        title: "File Uploaded",
+        description: `You uploaded "${req.file.originalname}" to "${task.title}".`,
+        type: "attachment",
+        userId,
+      });
+
       return res.status(201).json({
         success: true,
         message: "File uploaded successfully",

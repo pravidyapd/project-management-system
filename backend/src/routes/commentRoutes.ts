@@ -127,6 +127,14 @@ router.post("/:taskId", async (req: AuthRequest, res: Response) => {
       .where({ id: userId })
       .first();
 
+    // Create notification for the logged-in user
+    await db.orm.public.Notification.create({
+      title: "New Comment",
+      description: `You added a comment to "${task.title}".`,
+      type: "comment",
+      userId,
+    });
+
     return res.status(201).json({
       success: true,
       message: "Comment added successfully",
