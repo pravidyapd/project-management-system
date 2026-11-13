@@ -81,3 +81,7 @@ test-results/
 *.pem
 *.key
 *.crt
+
+# Task attachments
+/uploads/
+**/uploads/

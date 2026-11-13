@@ -14,6 +14,7 @@ import PageHeader from "@/components/common/PageHeader";
 import Modal from "@/components/common/Modal";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import TaskComments from "@/components/tasks/TaskComments";
+import TaskAttachments from "@/components/tasks/TaskAttachments";
 
 import {
   getTasks,
@@ -37,6 +38,7 @@ import {
   CalendarDays,
   FolderKanban,
   MessageSquare,
+  Paperclip,
 } from "lucide-react";
 
 export default function TasksPage() {
@@ -56,6 +58,9 @@ export default function TasksPage() {
   const [deleting, setDeleting] = useState(false);
 
   const [selectedCommentTask, setSelectedCommentTask] =
+    useState<Task | null>(null);
+
+  const [selectedAttachmentTask, setSelectedAttachmentTask] =
     useState<Task | null>(null);
 
   const [title, setTitle] = useState("");
@@ -370,7 +375,7 @@ export default function TasksPage() {
 
           {/* Table */}
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1150px] text-left">
+            <table className="w-full min-w-[1200px] text-left">
               <thead className="bg-[#202020]">
                 <tr className="text-xs uppercase tracking-wider text-zinc-400">
                   <th className="px-6 py-4 font-semibold">Task</th>
@@ -462,6 +467,16 @@ export default function TasksPage() {
                             className="rounded-full border border-white/10 bg-zinc-800 p-2.5 text-zinc-300 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-400"
                           >
                             <MessageSquare size={17} />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setSelectedAttachmentTask(task)}
+                            title="View attachments"
+                            aria-label={`View attachments for ${task.title}`}
+                            className="rounded-full border border-white/10 bg-zinc-800 p-2.5 text-zinc-300 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-400"
+                          >
+                            <Paperclip size={17} />
                           </button>
 
                           <button
@@ -664,6 +679,15 @@ export default function TasksPage() {
             taskId={selectedCommentTask.id}
             taskTitle={selectedCommentTask.title}
             onClose={() => setSelectedCommentTask(null)}
+          />
+        )}
+
+        {/* Task Attachments */}
+        {selectedAttachmentTask && (
+          <TaskAttachments
+            taskId={selectedAttachmentTask.id}
+            taskTitle={selectedAttachmentTask.title}
+            onClose={() => setSelectedAttachmentTask(null)}
           />
         )}
 

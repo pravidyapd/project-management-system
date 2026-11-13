@@ -22,7 +22,8 @@
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
     "google-auth-library": "^11.3.4",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.5.0"
   },
   "devDependencies": {
     "@prisma/cli-engine": "^0.9.0",
@@ -30,6 +31,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.3.0",
     "@types/node": "^26.6.6",
     "prisma": "^8.0.0-rc.33",
     "prisma7": "npm:prisma@^7.10.1",

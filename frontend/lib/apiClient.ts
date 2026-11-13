@@ -11,11 +11,16 @@ export async function apiRequest<T>(
   try {
     const headers = new Headers(options.headers);
 
-    if (options.body && !headers.has("Content-Type")) {
+    // Don't set JSON Content-Type for file uploads.
+    if (
+      options.body &&
+      !(options.body instanceof FormData) &&
+      !headers.has("Content-Type")
+    ) {
       headers.set("Content-Type", "application/json");
     }
 
-    // Attach the logged-in user's token
+    // Attach authentication token.
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
 
@@ -43,7 +48,9 @@ export async function apiRequest<T>(
   try {
     result = await response.json();
   } catch {
-    throw new Error("The server returned an invalid response.");
+    throw new Error(
+      `The server returned an invalid response (HTTP ${response.status}).`
+    );
   }
 
   if (!response.ok || result.success !== true) {

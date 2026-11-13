@@ -23,9 +23,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'bc06c90feda1a0a7d7bca1df26878ca49da978ec8657947ca4c11ddc98eea521'>;
+  StorageHashBase<'87e94e9c6e42dc014ed3854fbb761c9cf11b7bf59eadacd6bed8c9dcbdf407d8'>;
 export type ExecutionHash =
-  ExecutionHashBase<'d1b4b18244912ab785ab5882b9c2515348e052e289a83b2b5f86e76849384af7'>;
+  ExecutionHashBase<'0c8cc0596fef481cce76b2cdf38fd3d871cd6204053064e2859f2016039a8914'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -355,9 +355,21 @@ export namespace Models {
     title: FieldOutputTypes['public']['Task']['title'];
     updatedAt: FieldOutputTypes['public']['Task']['updatedAt'];
     assignee: public_TeamMember | null;
+    attachments: public_TaskAttachment[];
     comments: public_Comment[];
     project: public_Project;
-    readonly [RelationKeys]?: 'assignee' | 'comments' | 'project';
+    readonly [RelationKeys]?: 'assignee' | 'attachments' | 'comments' | 'project';
+  };
+  export type public_TaskAttachment = {
+    createdAt: FieldOutputTypes['public']['TaskAttachment']['createdAt'];
+    fileName: FieldOutputTypes['public']['TaskAttachment']['fileName'];
+    fileSize: FieldOutputTypes['public']['TaskAttachment']['fileSize'];
+    fileType: FieldOutputTypes['public']['TaskAttachment']['fileType'];
+    fileUrl: FieldOutputTypes['public']['TaskAttachment']['fileUrl'];
+    id: FieldOutputTypes['public']['TaskAttachment']['id'];
+    taskId: FieldOutputTypes['public']['TaskAttachment']['taskId'];
+    task: public_Task;
+    readonly [RelationKeys]?: 'task';
   };
   export type public_TeamMember = {
     createdAt: FieldOutputTypes['public']['TeamMember']['createdAt'];
@@ -393,6 +405,7 @@ export declare const models: {
     Notification: Models.public_Notification;
     Project: Models.public_Project;
     Task: Models.public_Task;
+    TaskAttachment: Models.public_TaskAttachment;
     TeamMember: Models.public_TeamMember;
     User: Models.public_User;
   };
@@ -752,6 +765,75 @@ type ContractBase = Omit<
                 },
               ];
             };
+            readonly TaskAttachment: {
+              columns: {
+                readonly createdAt: {
+                  readonly dataType: 'pg/timestamp';
+                  readonly codecId: 'pg/timestamp-date@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                  readonly typeParams: { readonly precision: 3 };
+                  readonly many: false;
+                };
+                readonly fileName: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly fileSize: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly fileType: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly fileUrl: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly id: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                  readonly many: false;
+                };
+                readonly taskId: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'TaskAttachment';
+                    readonly columns: readonly ['taskId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'Task';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
             readonly TeamMember: {
               columns: {
                 readonly createdAt: {
@@ -918,6 +1000,10 @@ type ContractBase = Omit<
     };
     readonly Project: { readonly namespace: 'public' & NamespaceId; readonly model: 'Project' };
     readonly Task: { readonly namespace: 'public' & NamespaceId; readonly model: 'Task' };
+    readonly TaskAttachment: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'TaskAttachment';
+    };
     readonly TeamMember: {
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'TeamMember';
@@ -1196,6 +1282,17 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['id'];
                 };
               };
+              readonly attachments: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'TaskAttachment';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['taskId'];
+                };
+              };
               readonly comments: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
@@ -1234,6 +1331,66 @@ type ContractBase = Omit<
                 readonly status: { readonly column: 'status' };
                 readonly title: { readonly column: 'title' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
+              };
+            };
+          };
+          readonly TaskAttachment: {
+            readonly fields: {
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamp-date@1';
+                  readonly typeParams: { readonly precision: 3 };
+                };
+              };
+              readonly fileName: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly fileSize: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly fileType: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly fileUrl: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly taskId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+            };
+            readonly relations: {
+              readonly task: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'Task' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['taskId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'TaskAttachment';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly fileName: { readonly column: 'fileName' };
+                readonly fileSize: { readonly column: 'fileSize' };
+                readonly fileType: { readonly column: 'fileType' };
+                readonly fileUrl: { readonly column: 'fileUrl' };
+                readonly id: { readonly column: 'id' };
+                readonly taskId: { readonly column: 'taskId' };
               };
             };
           };
@@ -1541,6 +1698,18 @@ type ContractBase = Omit<
           readonly ref: {
             readonly entry: 'Task';
             readonly field: 'updatedAt';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: {
+            readonly id: 'timestampNow';
+            readonly kind: 'generator';
+            readonly params: { readonly precision: 3 };
+          };
+          readonly ref: {
+            readonly entry: 'TaskAttachment';
+            readonly field: 'createdAt';
             readonly namespace: 'public';
           };
         },
