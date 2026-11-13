@@ -1,0 +1,122 @@
+# WorkSpace – Project Management System
+
+A full-stack Project Management System designed to help users organize projects, manage tasks, track progress, and collaborate with team members through a centralized platform.
+
+## Overview
+
+WorkSpace is a web-based application that provides an organized workspace for managing projects and daily tasks. It includes a dashboard, project management, task management, Kanban board, calendar, team management, and notifications.
+
+The application is built using Next.js and TypeScript for the frontend, Node.js and Express for the backend, and PostgreSQL with Prisma for database management.
+
+## Features
+
+### Dashboard
+- View total projects and tasks.
+- Track project and task progress.
+- View recent projects.
+- Get an overview of task statuses.
+
+### Project Management
+- Create new projects.
+- View all projects.
+- Edit project details.
+- Delete projects.
+- Track project status.
+
+### Task Management
+- Create and manage tasks.
+- Assign tasks to projects.
+- Update task details and status.
+- Set task due dates.
+- Search and filter tasks.
+
+### Kanban Board
+- Organize tasks into different columns.
+- Drag and drop tasks between statuses.
+- Track task progress visually.
+
+### Calendar
+- View tasks based on due dates.
+- Navigate between months.
+- View upcoming deadlines.
+- Identify tasks by their status.
+
+### Team Management
+- Add team members.
+- View team member details.
+- Update member information.
+- Remove team members.
+
+### Notifications
+- Receive notifications for project and task activities.
+- View unread and read notifications.
+- Mark notifications as read.
+- Mark all notifications as read.
+- Delete notifications.
+
+### Additional Features
+- Responsive user interface.
+- Search and filtering.
+- Reusable UI components.
+- Loading states and empty states.
+- Toast notifications for actions and errors.
+- Dark theme with orange accents.
+
+## Tech Stack
+
+### Frontend
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Lucide React
+- Sonner
+
+### Backend
+- Node.js
+- Express.js
+- TypeScript
+- REST API
+
+### Database
+- PostgreSQL
+- Prisma ORM
+
+### Development Tools
+- Visual Studio Code
+- Git
+- GitHub
+- Postman
+- pgAdmin 4
+
+## Project Structure
+
+project-management-system/
+│
+├── backend/
+│   ├── prisma/
+│   │   └── schema.prisma
+│   │
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── prisma/
+│   │   ├── routes/
+│   │   └── server.ts
+│   │
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── frontend/
+│   ├── app/
+│   ├── api/
+│   ├── components/
+│   ├── hooks/
+│   ├── lib/
+│   ├── public/
+│   ├── types/
+│   └── package.json
+│
+├── .gitignore
+└── README.md
