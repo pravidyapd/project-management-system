@@ -5,6 +5,8 @@ import { AuthRequest } from "../middleware/authMiddleware";
 
 const router = Router();
 
+const VALID_PRIORITIES = ["Low", "Medium", "High"];
+
 // Helper function to create user-specific notifications
 async function createNotification(
   title: string,
@@ -23,11 +25,39 @@ async function createNotification(
   }
 }
 
+// Validate and retrieve an assignee belonging to the logged-in user
+async function validateAssignee(assigneeId: unknown, userId: number) {
+  if (assigneeId === null || assigneeId === undefined || assigneeId === "") {
+    return { valid: true, id: null };
+  }
+
+  const parsedId = Number(assigneeId);
+
+  if (!Number.isInteger(parsedId) || parsedId <= 0) {
+    return { valid: false, id: null };
+  }
+
+  const member = await db.orm.public.TeamMember
+    .where({
+      id: parsedId,
+      userId,
+    })
+    .first();
+
+  if (!member) {
+    return { valid: false, id: null };
+  }
+
+  return { valid: true, id: parsedId };
+}
+
 // GET all tasks belonging to the logged-in user's projects
 router.get("/", async (req: AuthRequest, res: Response) => {
   try {
+    const userId = req.userId!;
+
     const projects = await db.orm.public.Project
-      .where({ userId: req.userId! })
+      .where({ userId })
       .all();
 
     const projectIds = projects.map((project) => project.id);
@@ -38,9 +68,31 @@ router.get("/", async (req: AuthRequest, res: Response) => {
       projectIds.includes(task.projectId)
     );
 
+    const teamMembers = await db.orm.public.TeamMember
+      .where({ userId })
+      .all();
+
+    const tasksWithAssignee = tasks.map((task) => {
+      const assignee = teamMembers.find(
+        (member) => member.id === task.assigneeId
+      );
+
+      return {
+        ...task,
+        assignee: assignee
+          ? {
+              id: assignee.id,
+              name: assignee.name,
+              email: assignee.email,
+              role: assignee.role,
+            }
+          : null,
+      };
+    });
+
     return res.json({
       success: true,
-      data: tasks,
+      data: tasksWithAssignee,
     });
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -54,7 +106,16 @@ router.get("/", async (req: AuthRequest, res: Response) => {
 // CREATE task
 router.post("/", async (req: AuthRequest, res: Response) => {
   try {
-    const { title, description, status, projectId, dueDate } = req.body;
+    const userId = req.userId!;
+    const {
+      title,
+      description,
+      status,
+      projectId,
+      dueDate,
+      priority,
+      assigneeId,
+    } = req.body;
 
     if (typeof title !== "string" || !title.trim()) {
       return res.status(400).json({
@@ -72,11 +133,19 @@ router.post("/", async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Verify that the project belongs to the logged-in user
+    const taskPriority = priority || "Medium";
+
+    if (!VALID_PRIORITIES.includes(taskPriority)) {
+      return res.status(400).json({
+        success: false,
+        message: "Priority must be Low, Medium, or High",
+      });
+    }
+
     const project = await db.orm.public.Project
       .where({
         id: parsedProjectId,
-        userId: req.userId!,
+        userId,
       })
       .first();
 
@@ -87,18 +156,38 @@ router.post("/", async (req: AuthRequest, res: Response) => {
       });
     }
 
+    const assignee = await validateAssignee(assigneeId, userId);
+
+    if (!assignee.valid) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid team member assignment",
+      });
+    }
+
+    const parsedDate = dueDate ? new Date(dueDate) : null;
+
+    if (parsedDate && isNaN(parsedDate.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid due date",
+      });
+    }
+
     const newTask = await db.orm.public.Task.create({
       title: title.trim(),
       description: description || null,
       status: status || "To Do",
+      priority: taskPriority,
       projectId: parsedProjectId,
-      dueDate: dueDate ? new Date(dueDate) : null,
+      dueDate: parsedDate,
+      assigneeId: assignee.id,
     });
 
     await createNotification(
       "New Task Created",
       `A new task "${newTask.title}" has been created.`,
-      req.userId!
+      userId
     );
 
     return res.status(201).json({
@@ -118,8 +207,17 @@ router.post("/", async (req: AuthRequest, res: Response) => {
 // UPDATE task
 router.put("/:id", async (req: AuthRequest, res: Response) => {
   try {
+    const userId = req.userId!;
     const taskId = Number(req.params.id);
-    const { title, description, status, dueDate } = req.body;
+
+    const {
+      title,
+      description,
+      status,
+      dueDate,
+      priority,
+      assigneeId,
+    } = req.body;
 
     if (!Number.isInteger(taskId) || taskId <= 0) {
       return res.status(400).json({
@@ -128,7 +226,6 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Find task and verify project ownership
     const existingTask = await db.orm.public.Task
       .where({ id: taskId })
       .first();
@@ -143,7 +240,7 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
     const project = await db.orm.public.Project
       .where({
         id: existingTask.projectId,
-        userId: req.userId!,
+        userId,
       })
       .first();
 
@@ -159,6 +256,8 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
       description?: string | null;
       status?: string;
       dueDate?: Date | null;
+      priority?: string;
+      assigneeId?: number | null;
     } = {};
 
     if (title !== undefined) {
@@ -180,6 +279,17 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
       updates.status = status;
     }
 
+    if (priority !== undefined) {
+      if (!VALID_PRIORITIES.includes(priority)) {
+        return res.status(400).json({
+          success: false,
+          message: "Priority must be Low, Medium, or High",
+        });
+      }
+
+      updates.priority = priority;
+    }
+
     if (dueDate !== undefined) {
       const parsedDate = dueDate ? new Date(dueDate) : null;
 
@@ -191,6 +301,19 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
       }
 
       updates.dueDate = parsedDate;
+    }
+
+    if (assigneeId !== undefined) {
+      const assignee = await validateAssignee(assigneeId, userId);
+
+      if (!assignee.valid) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid team member assignment",
+        });
+      }
+
+      updates.assigneeId = assignee.id;
     }
 
     if (Object.keys(updates).length === 0) {
@@ -215,13 +338,13 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
       await createNotification(
         "Task Status Updated",
         `The status of task "${updatedTask.title}" was updated to "${status}".`,
-        req.userId!
+        userId
       );
     } else {
       await createNotification(
         "Task Updated",
         `Task "${updatedTask.title}" has been updated.`,
-        req.userId!
+        userId
       );
     }
 
@@ -242,6 +365,7 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
 // DELETE task
 router.delete("/:id", async (req: AuthRequest, res: Response) => {
   try {
+    const userId = req.userId!;
     const taskId = Number(req.params.id);
 
     if (!Number.isInteger(taskId) || taskId <= 0) {
@@ -251,7 +375,6 @@ router.delete("/:id", async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Find task and verify project ownership
     const existingTask = await db.orm.public.Task
       .where({ id: taskId })
       .first();
@@ -266,7 +389,7 @@ router.delete("/:id", async (req: AuthRequest, res: Response) => {
     const project = await db.orm.public.Project
       .where({
         id: existingTask.projectId,
-        userId: req.userId!,
+        userId,
       })
       .first();
 
@@ -291,7 +414,7 @@ router.delete("/:id", async (req: AuthRequest, res: Response) => {
     await createNotification(
       "Task Deleted",
       `Task "${deletedTask.title}" has been deleted.`,
-      req.userId!
+      userId
     );
 
     return res.json({

@@ -9,6 +9,7 @@ import projectRoutes from "./routes/projectRoutes";
 import taskRoutes from "./routes/taskRoutes";
 import teamRoutes from "./routes/teamRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
+import commentRoutes from "./routes/commentRoutes";
 import authRoutes from "./routes/authRoutes";
 import { authenticateToken } from "./middleware/authMiddleware";
 
@@ -30,6 +31,7 @@ app.use("/api/projects", authenticateToken, projectRoutes);
 app.use("/api/tasks", authenticateToken, taskRoutes);
 app.use("/api/team", authenticateToken, teamRoutes);
 app.use("/api/notifications", authenticateToken, notificationRoutes);
+app.use("/api/comments", authenticateToken, commentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

@@ -134,16 +134,29 @@ export default function DashboardPage() {
     },
   ];
 
+  const todoPercentage = (todoTasks / taskTotal) * 100;
+  const inProgressPercentage = (inProgressTasks / taskTotal) * 100;
+  const completedPercentage = (completedTasks / taskTotal) * 100;
+
+  const todoEnd = todoPercentage;
+  const inProgressEnd = todoEnd + inProgressPercentage;
+  const completedEnd = inProgressEnd + completedPercentage;
+
+  const progressGradient = tasks.length
+    ? `conic-gradient(
+        #f97316 0% ${todoEnd}%,
+        #fbbf24 ${todoEnd}% ${inProgressEnd}%,
+        #10b981 ${inProgressEnd}% ${completedEnd}%,
+        rgba(255,255,255,0.07) ${completedEnd}% 100%
+      )`
+    : "rgba(255,255,255,0.07)";
+
   return (
     <AppLayout>
       <div className="page-enter mx-auto max-w-7xl space-y-8">
 
         {/* Header */}
         <div className="space-y-3">
-          {/* <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-500">
-            Workspace Overview
-          </p> */}
-
           <PageHeader
             title="Dashboard Overview"
             description="Get a clear view of your projects, tasks, and team progress."
@@ -164,7 +177,6 @@ export default function DashboardPage() {
           {stats.map((stat, index) => (
             <div
               key={stat.title}
-            //   className="hover-lift rounded-2xl border border-white/[0.07] bg-[#171717] p-1 shadow-xl"
               style={{ animationDelay: `${index * 80}ms` }}
             >
               <StatCard
@@ -249,21 +261,28 @@ export default function DashboardPage() {
               </p>
             </div>
 
+            {/* Three-color progress circle */}
             <div className="mb-8 flex items-center justify-center">
-              <div className="relative flex h-40 w-40 items-center justify-center rounded-full border-[10px] border-orange-500/20">
-                <div className="absolute inset-0 rounded-full border-[10px] border-orange-500 border-r-transparent border-b-transparent rotate-45" />
-
-                <div className="text-center">
-                  <p className="text-4xl font-bold text-white">
-                    {loading ? "..." : tasks.length}
-                  </p>
-                  <p className="mt-1 text-xs text-zinc-500">
-                    Total Tasks
-                  </p>
+              <div
+                className="relative flex h-40 w-40 items-center justify-center rounded-full p-[10px]"
+                style={{
+                  background: progressGradient,
+                }}
+              >
+                <div className="flex h-full w-full items-center justify-center rounded-full bg-[#171717]">
+                  <div className="text-center">
+                    <p className="text-4xl font-bold text-white">
+                      {loading ? "..." : tasks.length}
+                    </p>
+                    <p className="mt-1 text-xs text-zinc-500">
+                      Total Tasks
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
+            {/* Task status progress bars */}
             <div className="space-y-6">
               {taskStatuses.map((status) => (
                 <div key={status.name}>

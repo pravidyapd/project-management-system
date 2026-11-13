@@ -1,0 +1,184 @@
+[
+  {
+    "id": "column.public.Task.assigneeId",
+    "label": "Add column \"assigneeId\" to \"Task\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "assigneeId",
+        "table": "Task"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"assigneeId\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Task",
+          "assigneeId"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"assigneeId\" on \"Task\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"assigneeId\"",
+        "sql": "ALTER TABLE \"public\".\"Task\" ADD COLUMN \"assigneeId\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"assigneeId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Task",
+          "assigneeId"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"assigneeId\" on \"Task\""
+        }
+      },
+      {
+        "description": "verify column \"assigneeId\" has type \"integer\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Task",
+          "assigneeId",
+          "integer"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Task.priority",
+    "label": "Add column \"priority\" to \"Task\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "priority",
+        "table": "Task"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"priority\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Task",
+          "priority"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"priority\" on \"Task\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"priority\"",
+        "sql": "ALTER TABLE \"public\".\"Task\" ADD COLUMN \"priority\" text DEFAULT 'Medium' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"priority\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Task",
+          "priority"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"priority\" on \"Task\""
+        }
+      },
+      {
+        "description": "verify column \"priority\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Task",
+          "priority",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"priority\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Task",
+          "priority",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Task.Task_assigneeId_fkey",
+    "label": "Add foreign key \"Task_assigneeId_fkey\" on \"Task\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Task_assigneeId_fkey",
+        "table": "Task"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Task_assigneeId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Task_assigneeId_fkey",
+          "public",
+          "\"public\".\"Task\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Task_assigneeId_fkey\" on \"Task\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Task_assigneeId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Task\"\nADD CONSTRAINT \"Task_assigneeId_fkey\"\nFOREIGN KEY (\"assigneeId\")\nREFERENCES \"public\".\"TeamMember\" (\"id\")\nON DELETE SET NULL\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Task_assigneeId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Task_assigneeId_fkey",
+          "public",
+          "\"public\".\"Task\"",
+          "f",
+          "[\"assigneeId\"]",
+          "\"public\".\"TeamMember\"",
+          "[\"id\"]",
+          "n",
+          "c"
+        ]
+      }
+    ]
+  }
+]
