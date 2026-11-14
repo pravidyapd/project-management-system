@@ -19,6 +19,7 @@ import {
   BriefcaseBusiness,
   LogOut,
 } from "lucide-react";
+import Image from "next/image";
 
 const menuItems = [
   { name: "Dashboard", path: "/", icon: LayoutDashboard },
@@ -116,20 +117,28 @@ export default function Sidebar() {
     <header className="fixed left-0 right-0 top-0 z-50 w-full border-b border-white/[0.07] bg-[#0b0b0b]/95 text-white shadow-xl shadow-black/20 backdrop-blur-xl">
       <div className="mx-auto flex min-h-20 max-w-[1600px] items-center justify-between gap-4 px-4 md:px-6">
         {/* Logo */}
-        <Link href="/" className="flex shrink-0 items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-500 text-black shadow-lg shadow-orange-500/20">
-            <BriefcaseBusiness size={22} />
-          </div>
+        
+<Link href="/" className="flex shrink-0 items-center gap-3">
+  <div className="flex h-11 w-11 items-center justify-center">
+    <Image
+  src="/tasknest-logo-kanban.svg"
+  alt="TaskNest Logo"
+  width={44}
+  height={44}
+  priority
+  className="h-11 w-11 object-contain"
+/>
+  </div>
 
-          <div className="hidden sm:block">
-            <h2 className="text-lg font-bold tracking-tight">
-              Work<span className="text-orange-500">Space</span>
-            </h2>
-            <p className="text-[10px] tracking-[0.15em] text-zinc-500">
-              PROJECT MANAGEMENT
-            </p>
-          </div>
-        </Link>
+  <div className="hidden sm:block">
+    <h2 className="text-lg font-bold tracking-tight">
+      TaskNest
+    </h2>
+    <p className="text-[10px] tracking-[0.15em] text-zinc-500">
+      PROJECT MANAGEMENT
+    </p>
+  </div>
+</Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex">
