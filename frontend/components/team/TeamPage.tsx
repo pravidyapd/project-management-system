@@ -181,7 +181,6 @@ export default function TeamPage() {
   return (
     <AppLayout>
       <div className="page-enter mx-auto max-w-7xl space-y-8">
-
         {/* Page Header */}
         <div>
           <PageHeader
@@ -207,7 +206,7 @@ export default function TeamPage() {
             value={loading ? "..." : members.length}
             description="People in workspace"
             icon={Users}
-            color="bg-orange-500/10 text-orange-400"
+            color="bg-orange-500/10 text-orange-500 dark:text-orange-400"
           />
 
           <StatCard
@@ -215,7 +214,7 @@ export default function TeamPage() {
             value={loading ? "..." : adminCount}
             description="Workspace admins"
             icon={ShieldCheck}
-            color="bg-emerald-500/10 text-emerald-400"
+            color="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
           />
 
           <StatCard
@@ -223,21 +222,20 @@ export default function TeamPage() {
             value={loading ? "..." : otherCount}
             description="Developers and designers"
             icon={UserRound}
-            color="bg-violet-500/10 text-violet-400"
+            color="bg-violet-500/10 text-violet-600 dark:text-violet-400"
           />
         </div>
 
         {/* Team Members Table */}
-        <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#171717] shadow-xl shadow-black/10">
-
+        <section className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl shadow-black/5 dark:border-white/10 dark:bg-[#171717] dark:shadow-black/10">
           {/* Table Header */}
-          <div className="flex flex-col gap-4 border-b border-white/10 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex flex-col gap-4 border-b border-zinc-200 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6 dark:border-white/10">
             <div>
-              <h2 className="text-lg font-bold text-white">
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
                 All Members
               </h2>
 
-              <p className="mt-1 text-sm text-zinc-400">
+              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
                 View and manage your workspace members.
               </p>
             </div>
@@ -252,7 +250,7 @@ export default function TeamPage() {
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full min-w-[700px] text-left">
-              <thead className="bg-[#202020] text-xs uppercase tracking-wider text-zinc-400">
+              <thead className="bg-zinc-100 text-xs uppercase tracking-wider text-zinc-500 dark:bg-[#202020] dark:text-zinc-400">
                 <tr>
                   <th className="px-6 py-4 font-semibold">Member</th>
                   <th className="px-6 py-4 font-semibold">Email</th>
@@ -263,7 +261,7 @@ export default function TeamPage() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-white/[0.06]">
+              <tbody className="divide-y divide-zinc-100 dark:divide-white/[0.06]">
                 {loading ? (
                   <tr>
                     <td colSpan={4} className="px-6 py-8">
@@ -283,29 +281,29 @@ export default function TeamPage() {
                   filteredMembers.map((member) => (
                     <tr
                       key={member.id}
-                      className="transition-colors duration-200 hover:bg-white/[0.03]"
+                      className="transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-white/[0.03]"
                     >
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-orange-500/20 bg-orange-500/10 font-bold text-orange-400">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-orange-500/20 bg-orange-500/10 font-bold text-orange-600 dark:text-orange-400">
                             {member.name.charAt(0).toUpperCase()}
                           </div>
 
-                          <span className="font-semibold text-white">
+                          <span className="font-semibold text-zinc-900 dark:text-white">
                             {member.name}
                           </span>
                         </div>
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-zinc-400">
+                      <td className="px-6 py-5 text-sm text-zinc-600 dark:text-zinc-400">
                         <span className="flex items-center gap-2">
-                          <Mail size={15} className="text-orange-400" />
+                          <Mail size={15} className="text-orange-500 dark:text-orange-400" />
                           {member.email}
                         </span>
                       </td>
 
                       <td className="px-6 py-5">
-                        <span className="inline-flex rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1.5 text-xs font-semibold text-orange-400">
+                        <span className="inline-flex rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400">
                           {member.role}
                         </span>
                       </td>
@@ -316,7 +314,7 @@ export default function TeamPage() {
                             type="button"
                             onClick={() => openEditModal(member)}
                             aria-label={`Edit ${member.name}`}
-                            className="rounded-full border border-white/10 bg-zinc-800 p-2.5 text-zinc-300 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-400"
+                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-600 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-orange-400"
                           >
                             <Pencil size={17} />
                           </button>
@@ -325,7 +323,7 @@ export default function TeamPage() {
                             type="button"
                             onClick={() => setDeleteId(member.id)}
                             aria-label={`Delete ${member.name}`}
-                            className="rounded-full border border-white/10 bg-zinc-800 p-2.5 text-zinc-300 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-600 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-red-400"
                           >
                             <Trash2 size={17} />
                           </button>
@@ -339,13 +337,13 @@ export default function TeamPage() {
           </div>
 
           {/* Table Footer */}
-          <div className="border-t border-white/10 px-6 py-4 text-sm text-zinc-400">
+          <div className="border-t border-zinc-200 px-6 py-4 text-sm text-zinc-500 dark:border-white/10 dark:text-zinc-400">
             Showing{" "}
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-zinc-900 dark:text-white">
               {filteredMembers.length}
             </span>{" "}
             of{" "}
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-zinc-900 dark:text-white">
               {members.length}
             </span>{" "}
             members
@@ -361,15 +359,14 @@ export default function TeamPage() {
         onClose={closeModal}
       >
         <form onSubmit={handleSubmit} className="space-y-5">
-
           {error && (
-            <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-500 dark:text-red-400">
               {error}
             </div>
           )}
 
           <div>
-            <label className="mb-2 block text-sm font-semibold text-zinc-200">
+            <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
               Full Name
             </label>
 
@@ -378,12 +375,12 @@ export default function TeamPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter full name"
-              className="w-full rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white placeholder:text-zinc-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
+              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white dark:placeholder:text-zinc-500"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-semibold text-zinc-200">
+            <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
               Email Address
             </label>
 
@@ -393,19 +390,19 @@ export default function TeamPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter email address"
-              className="w-full rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white placeholder:text-zinc-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
+              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white dark:placeholder:text-zinc-500"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-semibold text-zinc-200">
+            <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
               Role
             </label>
 
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
+              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white"
             >
               <option value="Admin">Admin</option>
               <option value="Project Manager">Project Manager</option>
@@ -416,12 +413,12 @@ export default function TeamPage() {
           </div>
 
           {/* Form Actions */}
-          <div className="flex flex-col-reverse justify-end gap-3 border-t border-white/10 pt-5 sm:flex-row">
+          <div className="flex flex-col-reverse justify-end gap-3 border-t border-zinc-200 pt-5 sm:flex-row dark:border-white/10">
             <button
               type="button"
               onClick={closeModal}
               disabled={saving}
-              className="rounded-full border border-white/10 bg-zinc-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:opacity-50"
+              className="rounded-full border border-zinc-200 bg-zinc-100 px-6 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-200 disabled:opacity-50 dark:border-white/10 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
             >
               Cancel
             </button>

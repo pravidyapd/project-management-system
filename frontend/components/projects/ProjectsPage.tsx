@@ -182,7 +182,7 @@ export default function ProjectsPage() {
             value={loading ? "..." : projects.length}
             description="All registered projects"
             icon={FolderKanban}
-            color="bg-orange-500/10 text-orange-400"
+            color="bg-orange-500/10 text-orange-500 dark:text-orange-400"
           />
 
           <StatCard
@@ -190,7 +190,7 @@ export default function ProjectsPage() {
             value={loading ? "..." : active}
             description="Currently in progress"
             icon={Clock}
-            color="bg-blue-500/10 text-blue-400"
+            color="bg-blue-500/10 text-blue-600 dark:text-blue-400"
           />
 
           <StatCard
@@ -198,21 +198,21 @@ export default function ProjectsPage() {
             value={loading ? "..." : completed}
             description="Successfully completed"
             icon={CircleCheck}
-            color="bg-emerald-500/10 text-emerald-400"
+            color="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
           />
         </div>
 
         {/* Projects Table */}
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#171717] shadow-xl shadow-black/10">
+        <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl shadow-zinc-200/40 dark:border-white/10 dark:bg-[#171717] dark:shadow-black/10">
 
           {/* Table Header */}
-          <div className="flex flex-col justify-between gap-4 border-b border-white/10 p-5 sm:flex-row sm:items-center sm:p-6">
+          <div className="flex flex-col justify-between gap-4 border-b border-zinc-200 p-5 sm:flex-row sm:items-center sm:p-6 dark:border-white/10">
             <div>
-              <h2 className="text-lg font-bold text-white">
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
                 All Projects
               </h2>
 
-              <p className="mt-1 text-sm text-zinc-400">
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                 Manage your project information.
               </p>
             </div>
@@ -227,8 +227,8 @@ export default function ProjectsPage() {
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full min-w-[750px] text-left">
-              <thead className="bg-[#202020]">
-                <tr className="text-xs uppercase tracking-wider text-zinc-400">
+              <thead className="bg-zinc-100 dark:bg-[#202020]">
+                <tr className="text-xs uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
                   <th className="px-6 py-4 font-semibold">Project</th>
                   <th className="px-6 py-4 font-semibold">Description</th>
                   <th className="px-6 py-4 font-semibold">Status</th>
@@ -238,7 +238,7 @@ export default function ProjectsPage() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-white/[0.06]">
+              <tbody className="divide-y divide-zinc-200 dark:divide-white/[0.06]">
                 {loading ? (
                   <tr>
                     <td colSpan={4}>
@@ -258,21 +258,21 @@ export default function ProjectsPage() {
                   filteredProjects.map((project) => (
                     <tr
                       key={project.id}
-                      className="transition-colors duration-200 hover:bg-white/[0.03]"
+                      className="transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-white/[0.03]"
                     >
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
-                          <div className="rounded-xl border border-orange-500/20 bg-orange-500/10 p-2.5 text-orange-400">
+                          <div className="rounded-xl border border-orange-500/20 bg-orange-500/10 p-2.5 text-orange-600 dark:text-orange-400">
                             <FolderKanban size={19} />
                           </div>
 
-                          <span className="font-semibold text-white">
+                          <span className="font-semibold text-zinc-900 dark:text-white">
                             {project.name}
                           </span>
                         </div>
                       </td>
 
-                      <td className="max-w-xs px-6 py-5 text-sm text-zinc-400">
+                      <td className="max-w-xs px-6 py-5 text-sm text-zinc-600 dark:text-zinc-400">
                         {project.description || "—"}
                       </td>
 
@@ -286,7 +286,7 @@ export default function ProjectsPage() {
                             onClick={() => handleEdit(project)}
                             title="Edit project"
                             aria-label={`Edit ${project.name}`}
-                            className="rounded-full border border-white/10 bg-zinc-800 p-2.5 text-zinc-300 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-400"
+                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-700 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-orange-400"
                           >
                             <Pencil size={17} />
                           </button>
@@ -295,7 +295,7 @@ export default function ProjectsPage() {
                             onClick={() => setDeleteId(project.id)}
                             title="Delete project"
                             aria-label={`Delete ${project.name}`}
-                            className="rounded-full border border-white/10 bg-zinc-800 p-2.5 text-zinc-300 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-700 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-red-400"
                           >
                             <Trash2 size={17} />
                           </button>
@@ -309,13 +309,13 @@ export default function ProjectsPage() {
           </div>
 
           {/* Table Footer */}
-          <div className="border-t border-white/10 px-6 py-4 text-sm text-zinc-400">
+          <div className="border-t border-zinc-200 px-6 py-4 text-sm text-zinc-600 dark:border-white/10 dark:text-zinc-400">
             Showing{" "}
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-zinc-900 dark:text-white">
               {filteredProjects.length}
             </span>{" "}
             of{" "}
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-zinc-900 dark:text-white">
               {projects.length}
             </span>{" "}
             projects
@@ -333,7 +333,7 @@ export default function ProjectsPage() {
         >
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="mb-2 block text-sm font-semibold text-zinc-200">
+              <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
                 Project Name *
               </label>
 
@@ -342,12 +342,12 @@ export default function ProjectsPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter project name"
-                className="w-full rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white placeholder:text-zinc-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
+                className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white dark:placeholder:text-zinc-500"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-zinc-200">
+              <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
                 Description
               </label>
 
@@ -356,19 +356,19 @@ export default function ProjectsPage() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe your project..."
-                className="w-full resize-none rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white placeholder:text-zinc-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
+                className="w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white dark:placeholder:text-zinc-500"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-zinc-200">
+              <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
                 Project Status
               </label>
 
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
+                className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white"
               >
                 <option value="Planning">Todo</option>
                 <option value="In Progress">In Progress</option>
@@ -377,12 +377,12 @@ export default function ProjectsPage() {
             </div>
 
             {/* Form Actions */}
-            <div className="flex flex-col-reverse justify-end gap-3 border-t border-white/10 pt-5 sm:flex-row">
+            <div className="flex flex-col-reverse justify-end gap-3 border-t border-zinc-200 pt-5 sm:flex-row dark:border-white/10">
               <button
                 type="button"
                 onClick={resetForm}
                 disabled={saving}
-                className="rounded-full border border-white/10 bg-zinc-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:opacity-50"
+                className="rounded-full border border-zinc-300 bg-zinc-100 px-6 py-3 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-200 disabled:opacity-50 dark:border-white/10 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
               >
                 Cancel
               </button>

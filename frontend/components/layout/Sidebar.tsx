@@ -3,7 +3,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { toast } from "sonner";
 
 import {
@@ -16,10 +18,10 @@ import {
   Bell,
   Menu,
   X,
-  BriefcaseBusiness,
   LogOut,
+  Sun,
+  Moon,
 } from "lucide-react";
-import Image from "next/image";
 
 const menuItems = [
   { name: "Dashboard", path: "/", icon: LayoutDashboard },
@@ -38,6 +40,7 @@ const API =
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
 
   const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -58,6 +61,10 @@ export default function Sidebar() {
       }
     }
   }, []);
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -114,31 +121,31 @@ export default function Sidebar() {
   }, [pathname]);
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 w-full border-b border-white/[0.07] bg-[#0b0b0b]/95 text-white shadow-xl shadow-black/20 backdrop-blur-xl">
+    <header className="fixed left-0 right-0 top-0 z-50 w-full border-b border-border bg-background/95 text-foreground shadow-xl shadow-black/10 backdrop-blur-xl">
       <div className="mx-auto flex min-h-20 max-w-[1600px] items-center justify-between gap-4 px-4 md:px-6">
-        {/* Logo */}
-        
-<Link href="/" className="flex shrink-0 items-center gap-3">
-  <div className="flex h-11 w-11 items-center justify-center">
-    <Image
-  src="/tasknest-logo-kanban.svg"
-  alt="TaskNest Logo"
-  width={44}
-  height={44}
-  priority
-  className="h-11 w-11 object-contain"
-/>
-  </div>
 
-  <div className="hidden sm:block">
-    <h2 className="text-lg font-bold tracking-tight">
-      TaskNest
-    </h2>
-    <p className="text-[10px] tracking-[0.15em] text-zinc-500">
-      PROJECT MANAGEMENT
-    </p>
-  </div>
-</Link>
+        {/* Logo */}
+        <Link href="/" className="flex shrink-0 items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center">
+            <Image
+              src="/tasknest-logo-kanban.svg"
+              alt="TaskNest Logo"
+              width={44}
+              height={44}
+              priority
+              className="h-11 w-11 object-contain"
+            />
+          </div>
+
+          <div className="hidden sm:block">
+            <h2 className="text-lg font-bold tracking-tight">
+              TaskNest
+            </h2>
+            <p className="text-[10px] tracking-[0.15em] text-muted-foreground">
+              PROJECT MANAGEMENT
+            </p>
+          </div>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex">
@@ -154,7 +161,7 @@ export default function Sidebar() {
                 className={`relative flex items-center gap-2 rounded-full px-3 py-2.5 text-sm font-medium transition-all duration-200 xl:px-4 ${
                   active
                     ? "bg-orange-500 text-black shadow-lg shadow-orange-500/15"
-                    : "text-zinc-400 hover:bg-white/[0.06] hover:text-orange-400"
+                    : "text-muted-foreground hover:bg-accent hover:text-orange-500"
                 }`}
               >
                 <span className="relative">
@@ -174,7 +181,7 @@ export default function Sidebar() {
                     className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
                       active
                         ? "bg-black/15 text-black"
-                        : "bg-red-500/15 text-red-400"
+                        : "bg-red-500/15 text-red-500"
                     }`}
                   >
                     {unreadCount > 99 ? "99+" : unreadCount}
@@ -185,44 +192,83 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Profile and Logout */}
+        {/* Profile and Actions */}
         <div className="hidden shrink-0 items-center gap-3 lg:flex">
-          <div className="flex items-center gap-3 rounded-full border border-white/[0.07] bg-[#171717] py-2 pl-2 pr-4">
+
+          <div className="flex items-center gap-3 rounded-full border border-border bg-card py-2 pl-2 pr-4">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-orange-700 font-bold text-black">
               {userName.charAt(0).toUpperCase()}
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-white">{userName}</p>
-              <p className="text-[10px] text-zinc-500">Workspace Admin</p>
+              <p className="text-sm font-semibold">{userName}</p>
+              <p className="text-[10px] text-muted-foreground">
+                Workspace Admin
+              </p>
             </div>
           </div>
+
+          {/* Theme Toggle */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            title={
+              mounted && theme === "dark"
+                ? "Switch to light mode"
+                : "Switch to dark mode"
+            }
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-orange-500 transition hover:border-orange-500 hover:bg-accent"
+          >
+            {mounted && theme === "dark" ? (
+              <Sun size={19} />
+            ) : (
+              <Moon size={19} />
+            )}
+          </button>
 
           <button
             type="button"
             onClick={handleLogout}
-            className="flex items-center gap-2 rounded-full border border-white/10 bg-[#171717] px-4 py-3 text-sm font-medium text-zinc-400 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+            className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-3 text-sm font-medium text-muted-foreground transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-500"
           >
             <LogOut size={17} />
             Logout
           </button>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle navigation"
-          aria-expanded={mobileOpen}
-          className="rounded-full border border-white/10 bg-[#171717] p-3 text-orange-400 transition hover:bg-orange-500 hover:text-black lg:hidden"
-        >
-          {mobileOpen ? <X size={21} /> : <Menu size={21} />}
-        </button>
+        {/* Mobile Actions */}
+        <div className="flex items-center gap-2 lg:hidden">
+
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            title="Toggle theme"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-orange-500 transition hover:bg-accent"
+          >
+            {mounted && theme === "dark" ? (
+              <Sun size={19} />
+            ) : (
+              <Moon size={19} />
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle navigation"
+            aria-expanded={mobileOpen}
+            className="rounded-full border border-border bg-card p-3 text-orange-500 transition hover:bg-accent"
+          >
+            {mobileOpen ? <X size={21} /> : <Menu size={21} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Navigation */}
       {mobileOpen && (
-        <div className="border-t border-white/[0.07] bg-[#111111] p-4 lg:hidden">
+        <div className="border-t border-border bg-background p-4 lg:hidden">
           <nav className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -237,7 +283,7 @@ export default function Sidebar() {
                   className={`relative flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-medium transition ${
                     active
                       ? "bg-orange-500 text-black"
-                      : "bg-[#1c1c1c] text-zinc-400 hover:bg-white/10 hover:text-orange-400"
+                      : "bg-card text-muted-foreground hover:bg-accent hover:text-orange-500"
                   }`}
                 >
                   <Icon size={17} />
@@ -254,22 +300,24 @@ export default function Sidebar() {
           </nav>
 
           {/* Mobile Profile */}
-          <div className="mt-4 flex items-center justify-between border-t border-white/[0.07] pt-4">
+          <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 font-bold text-black">
                 {userName.charAt(0).toUpperCase()}
               </div>
 
               <div>
-                <p className="text-sm font-semibold text-white">{userName}</p>
-                <p className="text-xs text-zinc-500">Workspace Admin</p>
+                <p className="text-sm font-semibold">{userName}</p>
+                <p className="text-xs text-muted-foreground">
+                  Workspace Admin
+                </p>
               </div>
             </div>
 
             <button
               type="button"
               onClick={handleLogout}
-              className="flex items-center gap-2 rounded-lg bg-red-500/10 px-3 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/20"
+              className="flex items-center gap-2 rounded-lg bg-red-500/10 px-3 py-2 text-sm font-medium text-red-500 transition hover:bg-red-500/20"
             >
               <LogOut size={16} />
               Logout

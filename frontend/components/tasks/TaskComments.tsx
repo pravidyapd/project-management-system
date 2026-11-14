@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import {
   MessageSquare,
@@ -33,6 +34,11 @@ export default function TaskComments({
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -116,26 +122,31 @@ export default function TaskComments({
     }
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 p-4 backdrop-blur-md dark:bg-black/50"
       onMouseDown={onClose}
     >
       <div
-        className="page-enter flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#171717] shadow-2xl shadow-black/50"
+        className="page-enter flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-black/20 dark:border-white/10 dark:bg-[#171717] dark:shadow-black/50"
         onMouseDown={(event) => event.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 bg-[#1c1c1c] p-5">
+        <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 p-5 dark:border-white/10 dark:bg-[#1c1c1c]">
           <div>
             <div className="flex items-center gap-2">
-              <MessageSquare size={19} className="text-orange-400" />
-              <h2 className="text-lg font-bold text-white">
+              <MessageSquare
+                size={19}
+                className="text-orange-600 dark:text-orange-400"
+              />
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
                 Task Comments
               </h2>
             </div>
 
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
               {taskTitle}
             </p>
           </div>
@@ -144,7 +155,7 @@ export default function TaskComments({
             type="button"
             onClick={onClose}
             aria-label="Close comments"
-            className="rounded-full p-2 text-zinc-400 transition-all hover:bg-orange-500/10 hover:text-orange-400"
+            className="rounded-full p-2 text-zinc-500 transition-all hover:bg-orange-500/10 hover:text-orange-600 dark:text-zinc-400 dark:hover:text-orange-400"
           >
             <X size={20} />
           </button>
@@ -153,16 +164,16 @@ export default function TaskComments({
         {/* Comments List */}
         <div className="min-h-[200px] flex-1 space-y-4 overflow-y-auto p-5">
           {loading ? (
-            <p className="py-8 text-center text-sm text-zinc-400">
+            <p className="py-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
               Loading comments...
             </p>
           ) : comments.length === 0 ? (
             <div className="py-10 text-center">
               <MessageSquare
                 size={32}
-                className="mx-auto mb-3 text-zinc-600"
+                className="mx-auto mb-3 text-zinc-400 dark:text-zinc-600"
               />
-              <p className="font-medium text-zinc-300">
+              <p className="font-medium text-zinc-800 dark:text-zinc-300">
                 No comments yet
               </p>
               <p className="mt-1 text-sm text-zinc-500">
@@ -173,11 +184,11 @@ export default function TaskComments({
             comments.map((comment) => (
               <div
                 key={comment.id}
-                className="rounded-xl border border-white/[0.06] bg-[#202020] p-4"
+                className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-white/[0.06] dark:bg-[#202020]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-white">
+                    <p className="text-sm font-semibold text-zinc-900 dark:text-white">
                       {comment.user?.name || "Unknown User"}
                     </p>
 
@@ -192,13 +203,13 @@ export default function TaskComments({
                     disabled={deletingId === comment.id}
                     title="Delete comment"
                     aria-label="Delete comment"
-                    className="rounded-lg p-2 text-zinc-500 transition hover:bg-red-500/10 hover:text-red-400 disabled:opacity-50"
+                    className="rounded-lg p-2 text-zinc-500 transition hover:bg-red-500/10 hover:text-red-600 disabled:opacity-50 dark:hover:text-red-400"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
 
-                <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-zinc-300">
+                <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-zinc-700 dark:text-zinc-300">
                   {comment.content}
                 </p>
               </div>
@@ -209,9 +220,9 @@ export default function TaskComments({
         {/* Add Comment */}
         <form
           onSubmit={handleSubmit}
-          className="border-t border-white/10 p-5"
+          className="border-t border-zinc-200 p-5 dark:border-white/10"
         >
-          <label className="mb-2 block text-sm font-semibold text-zinc-200">
+          <label className="mb-2 block text-sm font-semibold text-zinc-800 dark:text-zinc-200">
             Add a comment
           </label>
 
@@ -221,14 +232,14 @@ export default function TaskComments({
             onChange={(e) => setContent(e.target.value)}
             placeholder="Write your comment..."
             maxLength={2000}
-            className="w-full resize-none rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white placeholder:text-zinc-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
+            className="w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white dark:placeholder:text-zinc-500"
           />
 
           <div className="mt-3 flex justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-white/10 px-5 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/10 hover:text-white"
+              className="rounded-lg border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900 dark:border-white/10 dark:text-zinc-300 dark:hover:bg-white/10 dark:hover:text-white"
             >
               Done
             </button>
@@ -244,6 +255,7 @@ export default function TaskComments({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

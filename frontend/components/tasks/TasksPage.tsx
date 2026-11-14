@@ -194,11 +194,11 @@ export default function TasksPage() {
   const getPriorityStyle = (value: string) => {
     switch (value) {
       case "High":
-        return "border-red-500/20 bg-red-500/10 text-red-400";
+        return "border-red-200 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400";
       case "Low":
-        return "border-emerald-500/20 bg-emerald-500/10 text-emerald-400";
+        return "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400";
       default:
-        return "border-amber-500/20 bg-amber-500/10 text-amber-400";
+        return "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400";
     }
   };
 
@@ -243,7 +243,7 @@ export default function TasksPage() {
   });
 
   const filterSelectClass =
-    "w-full rounded-full border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 sm:w-auto";
+    "w-full rounded-full border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 sm:w-auto dark:border-white/10 dark:bg-[#202020] dark:text-white";
 
   return (
     <AppLayout>
@@ -275,7 +275,7 @@ export default function TasksPage() {
 
         {/* No Projects Message */}
         {projects.length === 0 && !loading && (
-          <div className="mb-6 rounded-xl border border-orange-500/20 bg-orange-500/10 p-4 text-sm text-orange-300">
+          <div className="mb-6 rounded-xl border border-orange-500/20 bg-orange-500/10 p-4 text-sm text-orange-700 dark:text-orange-300">
             Please create a project before adding a task.
           </div>
         )}
@@ -287,7 +287,7 @@ export default function TasksPage() {
             value={loading ? "..." : tasks.length}
             description="All tasks"
             icon={ListTodo}
-            color="bg-orange-500/10 text-orange-400"
+            color="bg-orange-500/10 text-orange-600 dark:text-orange-400"
           />
 
           <StatCard
@@ -295,7 +295,7 @@ export default function TasksPage() {
             value={loading ? "..." : todo}
             description="Tasks waiting to start"
             icon={Clock}
-            color="bg-amber-500/10 text-amber-400"
+            color="bg-amber-500/10 text-amber-600 dark:text-amber-400"
           />
 
           <StatCard
@@ -303,7 +303,7 @@ export default function TasksPage() {
             value={loading ? "..." : inProgress}
             description="Currently working"
             icon={FolderKanban}
-            color="bg-blue-500/10 text-blue-400"
+            color="bg-blue-500/10 text-blue-600 dark:text-blue-400"
           />
 
           <StatCard
@@ -311,17 +311,19 @@ export default function TasksPage() {
             value={loading ? "..." : completed}
             description="Finished tasks"
             icon={CircleCheck}
-            color="bg-emerald-500/10 text-emerald-400"
+            color="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
           />
         </div>
 
         {/* Tasks Table */}
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#171717] shadow-xl shadow-black/10">
+        <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl shadow-zinc-200/40 dark:border-white/10 dark:bg-[#171717] dark:shadow-black/10">
           {/* Table Header */}
-          <div className="flex flex-col justify-between gap-4 border-b border-white/10 p-5 lg:p-6">
+          <div className="flex flex-col justify-between gap-4 border-b border-zinc-200 p-5 lg:p-6 dark:border-white/10">
             <div>
-              <h2 className="text-lg font-bold text-white">All Tasks</h2>
-              <p className="mt-1 text-sm text-zinc-400">
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
+                All Tasks
+              </h2>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                 View and manage your tasks.
               </p>
             </div>
@@ -376,8 +378,8 @@ export default function TasksPage() {
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1200px] text-left">
-              <thead className="bg-[#202020]">
-                <tr className="text-xs uppercase tracking-wider text-zinc-400">
+              <thead className="bg-zinc-100 dark:bg-[#202020]">
+                <tr className="text-xs uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
                   <th className="px-6 py-4 font-semibold">Task</th>
                   <th className="px-6 py-4 font-semibold">Project</th>
                   <th className="px-6 py-4 font-semibold">Priority</th>
@@ -390,7 +392,7 @@ export default function TasksPage() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-white/[0.06]">
+              <tbody className="divide-y divide-zinc-200 dark:divide-white/[0.06]">
                 {loading ? (
                   <tr>
                     <td colSpan={7} className="px-6 py-8">
@@ -410,18 +412,18 @@ export default function TasksPage() {
                   filteredTasks.map((task) => (
                     <tr
                       key={task.id}
-                      className="transition-colors duration-200 hover:bg-white/[0.03]"
+                      className="transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-white/[0.03]"
                     >
                       <td className="px-6 py-5">
-                        <p className="font-semibold text-white">
+                        <p className="font-semibold text-zinc-900 dark:text-white">
                           {task.title}
                         </p>
-                        <p className="mt-1 text-xs text-zinc-400">
+                        <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
                           {task.description || "No description"}
                         </p>
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-zinc-300">
+                      <td className="px-6 py-5 text-sm text-zinc-700 dark:text-zinc-300">
                         {getProjectName(task.projectId)}
                       </td>
 
@@ -435,17 +437,17 @@ export default function TasksPage() {
                         </span>
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-zinc-300">
+                      <td className="px-6 py-5 text-sm text-zinc-700 dark:text-zinc-300">
                         {task.assignee?.name || (
                           <span className="text-zinc-500">Unassigned</span>
                         )}
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-zinc-400">
+                      <td className="px-6 py-5 text-sm text-zinc-600 dark:text-zinc-400">
                         <span className="flex items-center gap-2">
                           <CalendarDays
                             size={16}
-                            className="text-orange-400"
+                            className="text-orange-600 dark:text-orange-400"
                           />
                           {task.dueDate
                             ? new Date(task.dueDate).toLocaleDateString()
@@ -464,7 +466,7 @@ export default function TasksPage() {
                             onClick={() => setSelectedCommentTask(task)}
                             title="View comments"
                             aria-label={`View comments for ${task.title}`}
-                            className="rounded-full border border-white/10 bg-zinc-800 p-2.5 text-zinc-300 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-400"
+                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-700 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-orange-400"
                           >
                             <MessageSquare size={17} />
                           </button>
@@ -474,7 +476,7 @@ export default function TasksPage() {
                             onClick={() => setSelectedAttachmentTask(task)}
                             title="View attachments"
                             aria-label={`View attachments for ${task.title}`}
-                            className="rounded-full border border-white/10 bg-zinc-800 p-2.5 text-zinc-300 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-400"
+                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-700 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-orange-400"
                           >
                             <Paperclip size={17} />
                           </button>
@@ -484,7 +486,7 @@ export default function TasksPage() {
                             onClick={() => handleEdit(task)}
                             title="Edit task"
                             aria-label={`Edit ${task.title}`}
-                            className="rounded-full border border-white/10 bg-zinc-800 p-2.5 text-zinc-300 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-400"
+                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-700 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-orange-400"
                           >
                             <Pencil size={17} />
                           </button>
@@ -494,7 +496,7 @@ export default function TasksPage() {
                             onClick={() => setDeleteId(task.id)}
                             title="Delete task"
                             aria-label={`Delete ${task.title}`}
-                            className="rounded-full border border-white/10 bg-zinc-800 p-2.5 text-zinc-300 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-700 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-red-400"
                           >
                             <Trash2 size={17} />
                           </button>
@@ -508,13 +510,15 @@ export default function TasksPage() {
           </div>
 
           {/* Table Footer */}
-          <div className="border-t border-white/10 px-6 py-4 text-sm text-zinc-400">
+          <div className="border-t border-zinc-200 px-6 py-4 text-sm text-zinc-600 dark:border-white/10 dark:text-zinc-400">
             Showing{" "}
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-zinc-900 dark:text-white">
               {filteredTasks.length}
             </span>{" "}
             of{" "}
-            <span className="font-semibold text-white">{tasks.length}</span>{" "}
+            <span className="font-semibold text-zinc-900 dark:text-white">
+              {tasks.length}
+            </span>{" "}
             tasks
           </div>
         </div>
@@ -530,7 +534,7 @@ export default function TasksPage() {
         >
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="mb-2 block text-sm font-semibold text-zinc-200">
+              <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
                 Task Title *
               </label>
               <input
@@ -538,12 +542,12 @@ export default function TasksPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter task title"
-                className="w-full rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white placeholder:text-zinc-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
+                className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white dark:placeholder:text-zinc-500"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-zinc-200">
+              <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
                 Description
               </label>
               <textarea
@@ -551,19 +555,19 @@ export default function TasksPage() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe the task..."
-                className="w-full resize-none rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white placeholder:text-zinc-500 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
+                className="w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white dark:placeholder:text-zinc-500"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-zinc-200">
+              <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
                 Select Project *
               </label>
               <select
                 required
                 value={projectId}
                 onChange={(e) => setProjectId(e.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
+                className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white"
               >
                 <option value="">Choose a project</option>
                 {projects.map((project) => (
@@ -576,7 +580,7 @@ export default function TasksPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-zinc-200">
+                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
                   Priority
                 </label>
                 <select
@@ -584,7 +588,7 @@ export default function TasksPage() {
                   onChange={(e) =>
                     setPriority(e.target.value as TaskPriority)
                   }
-                  className="w-full rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white outline-none transition focus:border-orange-500"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 dark:border-white/10 dark:bg-[#202020] dark:text-white"
                 >
                   <option value="Low">Low</option>
                   <option value="Medium">Medium</option>
@@ -593,13 +597,13 @@ export default function TasksPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-zinc-200">
+                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
                   Assign To
                 </label>
                 <select
                   value={assigneeId}
                   onChange={(e) => setAssigneeId(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white outline-none transition focus:border-orange-500"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 dark:border-white/10 dark:bg-[#202020] dark:text-white"
                 >
                   <option value="">Unassigned</option>
                   {teamMembers.map((member) => (
@@ -619,13 +623,13 @@ export default function TasksPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-zinc-200">
+                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
                   Status
                 </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-sm text-white outline-none transition focus:border-orange-500"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 dark:border-white/10 dark:bg-[#202020] dark:text-white"
                 >
                   <option value="To Do">To Do</option>
                   <option value="In Progress">In Progress</option>
@@ -634,25 +638,25 @@ export default function TasksPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-zinc-200">
+                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
                   Due Date
                 </label>
                 <input
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-[#202020] px-3 py-3 text-sm text-white outline-none transition focus:border-orange-500"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 dark:border-white/10 dark:bg-[#202020] dark:text-white"
                 />
               </div>
             </div>
 
             {/* Form Actions */}
-            <div className="flex flex-col-reverse justify-end gap-3 border-t border-white/10 pt-5 sm:flex-row">
+            <div className="flex flex-col-reverse justify-end gap-3 border-t border-zinc-200 pt-5 sm:flex-row dark:border-white/10">
               <button
                 type="button"
                 onClick={resetForm}
                 disabled={saving}
-                className="rounded-full border border-white/10 bg-zinc-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:opacity-50"
+                className="rounded-full border border-zinc-300 bg-zinc-100 px-6 py-3 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-200 disabled:opacity-50 dark:border-white/10 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
               >
                 Cancel
               </button>
