@@ -18,7 +18,7 @@ export default function SearchInput({
     <div className="group relative w-full max-w-sm">
       <Search
         size={18}
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors group-focus-within:text-orange-500 dark:group-focus-within:text-orange-400"
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-orange-500"
       />
 
       <input
@@ -26,7 +26,7 @@ export default function SearchInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-full border border-zinc-200 bg-white py-3 pl-11 pr-11 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all duration-200 hover:border-zinc-300 focus:border-orange-500/60 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#171717] dark:text-white dark:placeholder:text-zinc-500 dark:hover:border-white/20"
+        className="w-full rounded-full border border-border bg-card py-3 pl-11 pr-11 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all duration-200 hover:border-ring/50 focus:border-orange-500/60 focus:ring-2 focus:ring-orange-500/15"
       />
 
       {value && (
@@ -34,7 +34,7 @@ export default function SearchInput({
           type="button"
           onClick={() => onChange("")}
           aria-label="Clear search"
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 transition-colors hover:text-orange-600 dark:text-zinc-400 dark:hover:text-orange-400"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-orange-500"
         >
           <X size={16} />
         </button>

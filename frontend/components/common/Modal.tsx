@@ -50,18 +50,18 @@ export default function Modal({
       onMouseDown={onClose}
     >
       <div
-        className="page-enter w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-black/20 dark:border-white/10 dark:bg-[#171717] dark:shadow-black/50"
+        className="page-enter w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-black/20"
         onMouseDown={(event) => event.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-zinc-200 bg-zinc-50 p-5 dark:border-white/10 dark:bg-[#1c1c1c]">
+        <div className="flex items-start justify-between border-b border-border bg-muted p-5">
           <div>
-            <h2 className="text-xl font-bold text-zinc-900 dark:text-white">
+            <h2 className="text-xl font-bold text-foreground">
               {title}
             </h2>
 
             {description && (
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
+              <p className="mt-1 text-sm text-muted-foreground">
                 {description}
               </p>
             )}
@@ -71,14 +71,14 @@ export default function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="rounded-full p-2 text-zinc-500 transition-all hover:bg-orange-500/10 hover:text-orange-600 dark:text-zinc-400 dark:hover:text-orange-400"
+            className="rounded-full p-2 text-muted-foreground transition-all hover:bg-orange-500/10 hover:text-orange-500"
           >
             <X size={21} />
           </button>
         </div>
 
         {/* Content */}
-        <div className="max-h-[75vh] overflow-y-auto p-6 text-zinc-900 dark:text-white">
+        <div className="max-h-[75vh] overflow-y-auto p-6 text-foreground">
           {children}
         </div>
       </div>

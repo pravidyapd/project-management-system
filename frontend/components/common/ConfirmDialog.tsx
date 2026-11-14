@@ -48,7 +48,7 @@ export default function ConfirmDialog({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm dark:bg-black/80"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 p-4 backdrop-blur-md dark:bg-black/50"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !loading) {
           onCancel();
@@ -59,7 +59,7 @@ export default function ConfirmDialog({
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
-        className="page-enter w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl shadow-black/20 dark:border-white/10 dark:bg-[#171717] dark:shadow-black/50"
+        className="page-enter w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl shadow-black/20"
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -69,7 +69,7 @@ export default function ConfirmDialog({
 
             <h2
               id="confirm-dialog-title"
-              className="text-lg font-bold text-zinc-900 dark:text-white"
+              className="text-lg font-bold text-foreground"
             >
               {title}
             </h2>
@@ -80,13 +80,13 @@ export default function ConfirmDialog({
             onClick={onCancel}
             disabled={loading}
             aria-label="Close dialog"
-            className="rounded-full p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900 disabled:opacity-50 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-white"
+            className="rounded-full p-2 text-muted-foreground transition hover:bg-accent hover:text-foreground disabled:opacity-50"
           >
             <X size={20} />
           </button>
         </div>
 
-        <p className="mt-5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+        <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
           {message}
         </p>
 
@@ -95,7 +95,7 @@ export default function ConfirmDialog({
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className="rounded-full border border-zinc-300 bg-zinc-100 px-5 py-2.5 text-sm font-medium text-zinc-800 transition hover:bg-zinc-200 disabled:opacity-50 dark:border-white/10 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
+            className="rounded-full border border-border bg-muted px-5 py-2.5 text-sm font-medium text-foreground transition hover:bg-accent disabled:opacity-50"
           >
             Cancel
           </button>

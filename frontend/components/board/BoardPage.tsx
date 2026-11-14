@@ -35,7 +35,8 @@ const columns = [
     title: "To Do",
     icon: Circle,
     iconColor: "text-orange-500 dark:text-orange-400",
-    countColor: "border-orange-500/20 bg-orange-500/10 text-orange-600 dark:text-orange-400",
+    countColor:
+      "border-orange-500/20 bg-orange-500/10 text-orange-600 dark:text-orange-400",
     dropColor: "border-orange-500/40 bg-orange-500/[0.06]",
     cardBorder: "border-l-orange-500",
     labelColor: "text-orange-600 dark:text-orange-400",
@@ -44,7 +45,8 @@ const columns = [
     title: "In Progress",
     icon: Clock,
     iconColor: "text-blue-500 dark:text-blue-400",
-    countColor: "border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    countColor:
+      "border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400",
     dropColor: "border-blue-500/40 bg-blue-500/[0.06]",
     cardBorder: "border-l-blue-500",
     labelColor: "text-blue-600 dark:text-blue-400",
@@ -53,7 +55,8 @@ const columns = [
     title: "Completed",
     icon: CheckCircle2,
     iconColor: "text-emerald-500 dark:text-emerald-400",
-    countColor: "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+    countColor:
+      "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
     dropColor: "border-emerald-500/40 bg-emerald-500/[0.06]",
     cardBorder: "border-l-emerald-500",
     labelColor: "text-emerald-600 dark:text-emerald-400",
@@ -170,7 +173,6 @@ export default function BoardPage() {
   return (
     <AppLayout>
       <div className="mx-auto max-w-7xl space-y-8">
-
         {/* Header */}
         <PageHeader
           title="Task Board"
@@ -179,11 +181,14 @@ export default function BoardPage() {
 
         {/* Board Information */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-            <LayoutGrid size={17} className="text-orange-500 dark:text-orange-400" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <LayoutGrid
+              size={17}
+              className="text-orange-500 dark:text-orange-400"
+            />
             <span>Workspace Board</span>
-            <span className="text-zinc-400 dark:text-zinc-600">/</span>
-            <span className="font-semibold text-zinc-900 dark:text-white">
+            <span className="text-muted-foreground">/</span>
+            <span className="font-semibold text-foreground">
               {tasks.length} Tasks
             </span>
           </div>
@@ -205,7 +210,6 @@ export default function BoardPage() {
           />
         ) : (
           <div className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-3">
-
             {columns.map((column) => {
               const Icon = column.icon;
 
@@ -220,17 +224,16 @@ export default function BoardPage() {
                   key={column.title}
                   className="flex min-w-0 flex-col"
                 >
-
                   {/* Column Header */}
-                  <div className="mb-4 flex items-center rounded-xl border border-zinc-200 bg-white px-4 py-4 dark:border-white/10 dark:bg-[#171717]">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-100 dark:border-white/10 dark:bg-[#222222]">
+                  <div className="mb-4 flex items-center rounded-xl border border-border bg-card px-4 py-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-muted">
                       <Icon
                         size={20}
                         className={column.iconColor}
                       />
                     </div>
 
-                    <h2 className="ml-3 font-semibold text-zinc-900 dark:text-white">
+                    <h2 className="ml-3 font-semibold text-foreground">
                       {column.title}
                     </h2>
 
@@ -250,10 +253,10 @@ export default function BoardPage() {
                       handleDrop(event, column.title)
                     }
                     onDragLeave={() => setDragOverColumn(null)}
-                    className={`flex-1 min-h-[450px] space-y-3 rounded-2xl border p-3 ${
+                    className={`min-h-[450px] flex-1 space-y-3 rounded-2xl border p-3 ${
                       isDragOver
                         ? column.dropColor
-                        : "border-zinc-200 bg-zinc-100/70 dark:border-white/[0.06] dark:bg-[#111111]"
+                        : "border-border bg-muted/70"
                     }`}
                   >
                     {columnTasks.map((task) => (
@@ -267,7 +270,7 @@ export default function BoardPage() {
                           setDraggedTaskId(null);
                           setDragOverColumn(null);
                         }}
-                        className={`flex min-h-[190px] w-full cursor-grab flex-col select-none rounded-xl border border-zinc-200 border-l-[3px] bg-white p-4 shadow-sm transition-colors active:cursor-grabbing dark:border-white/[0.07] dark:bg-[#1b1b1b] ${
+                        className={`flex min-h-[190px] w-full cursor-grab flex-col select-none rounded-xl border border-border border-l-[3px] bg-card p-4 shadow-sm transition-colors active:cursor-grabbing ${
                           column.cardBorder
                         } ${
                           draggedTaskId === task.id
@@ -277,24 +280,24 @@ export default function BoardPage() {
                       >
                         {/* Task Title */}
                         <div className="flex items-start justify-between gap-3">
-                          <h3 className="min-w-0 flex-1 break-words font-semibold leading-snug text-zinc-900 dark:text-white">
+                          <h3 className="min-w-0 flex-1 break-words font-semibold leading-snug text-foreground">
                             {task.title}
                           </h3>
 
                           <GripVertical
                             size={20}
-                            className="shrink-0 text-zinc-400 dark:text-zinc-500"
+                            className="shrink-0 text-muted-foreground"
                           />
                         </div>
 
                         {/* Description */}
-                        <p className="mt-3 min-h-[40px] line-clamp-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                        <p className="mt-3 min-h-[40px] line-clamp-2 text-sm leading-relaxed text-muted-foreground">
                           {task.description ||
                             "No description provided"}
                         </p>
 
                         {/* Project */}
-                        <div className="mt-auto rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2 text-xs font-medium text-zinc-700 dark:border-white/[0.07] dark:bg-[#222222] dark:text-zinc-300">
+                        <div className="mt-auto rounded-lg border border-border bg-muted px-3 py-2 text-xs font-medium text-foreground">
                           {getProjectName(task.projectId)}
                         </div>
 
@@ -309,10 +312,10 @@ export default function BoardPage() {
 
                         {/* Due Date */}
                         {task.dueDate && (
-                          <div className="mt-3 flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+                          <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
                             <CalendarDays
                               size={14}
-                              className="text-zinc-500"
+                              className="text-muted-foreground"
                             />
 
                             Due{" "}
@@ -326,18 +329,18 @@ export default function BoardPage() {
 
                     {/* Empty Column */}
                     {columnTasks.length === 0 && (
-                      <div className="flex min-h-[180px] flex-col items-center justify-center rounded-xl border border-dashed border-zinc-300 px-4 text-center dark:border-white/10">
-                        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-zinc-200 text-zinc-500 dark:bg-white/[0.04] dark:text-zinc-500">
+                      <div className="flex min-h-[180px] flex-col items-center justify-center rounded-xl border border-dashed border-border px-4 text-center">
+                        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
                           <Icon size={19} />
                         </div>
 
-                        <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                        <p className="text-sm font-medium text-muted-foreground">
                           {search
                             ? "No matching tasks"
                             : "Drop tasks here"}
                         </p>
 
-                        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-600">
+                        <p className="mt-1 text-xs text-muted-foreground">
                           {search
                             ? "Try a different search"
                             : "Drag a task into this column"}

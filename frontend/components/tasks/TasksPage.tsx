@@ -243,7 +243,16 @@ export default function TasksPage() {
   });
 
   const filterSelectClass =
-    "w-full rounded-full border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 sm:w-auto dark:border-white/10 dark:bg-[#202020] dark:text-white";
+    "w-full rounded-full border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 sm:w-auto";
+
+  const actionButtonClass =
+    "rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-600 dark:hover:text-orange-400";
+
+  const formLabelClass =
+    "mb-2 block text-sm font-semibold text-foreground";
+
+  const formControlClass =
+    "w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15";
 
   return (
     <AppLayout>
@@ -264,7 +273,7 @@ export default function TasksPage() {
                   setShowDialog(true);
                 }}
                 disabled={projects.length === 0}
-                className="orange-button flex w-full items-center justify-center gap-2 sm:w-auto disabled:cursor-not-allowed disabled:opacity-50"
+                className="orange-button flex w-full items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
               >
                 <Plus size={19} />
                 Add Task
@@ -316,14 +325,14 @@ export default function TasksPage() {
         </div>
 
         {/* Tasks Table */}
-        <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl shadow-zinc-200/40 dark:border-white/10 dark:bg-[#171717] dark:shadow-black/10">
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl shadow-black/5 dark:shadow-black/10">
           {/* Table Header */}
-          <div className="flex flex-col justify-between gap-4 border-b border-zinc-200 p-5 lg:p-6 dark:border-white/10">
+          <div className="flex flex-col justify-between gap-4 border-b border-border p-5 lg:p-6">
             <div>
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
+              <h2 className="text-lg font-bold text-foreground">
                 All Tasks
               </h2>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="mt-1 text-sm text-muted-foreground">
                 View and manage your tasks.
               </p>
             </div>
@@ -378,8 +387,8 @@ export default function TasksPage() {
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1200px] text-left">
-              <thead className="bg-zinc-100 dark:bg-[#202020]">
-                <tr className="text-xs uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+              <thead className="bg-muted">
+                <tr className="text-xs uppercase tracking-wider text-muted-foreground">
                   <th className="px-6 py-4 font-semibold">Task</th>
                   <th className="px-6 py-4 font-semibold">Project</th>
                   <th className="px-6 py-4 font-semibold">Priority</th>
@@ -392,7 +401,7 @@ export default function TasksPage() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-zinc-200 dark:divide-white/[0.06]">
+              <tbody className="divide-y divide-border">
                 {loading ? (
                   <tr>
                     <td colSpan={7} className="px-6 py-8">
@@ -412,18 +421,18 @@ export default function TasksPage() {
                   filteredTasks.map((task) => (
                     <tr
                       key={task.id}
-                      className="transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-white/[0.03]"
+                      className="transition-colors duration-200 hover:bg-accent"
                     >
                       <td className="px-6 py-5">
-                        <p className="font-semibold text-zinc-900 dark:text-white">
+                        <p className="font-semibold text-foreground">
                           {task.title}
                         </p>
-                        <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+                        <p className="mt-1 text-xs text-muted-foreground">
                           {task.description || "No description"}
                         </p>
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-zinc-700 dark:text-zinc-300">
+                      <td className="px-6 py-5 text-sm text-foreground">
                         {getProjectName(task.projectId)}
                       </td>
 
@@ -437,13 +446,15 @@ export default function TasksPage() {
                         </span>
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-zinc-700 dark:text-zinc-300">
+                      <td className="px-6 py-5 text-sm text-foreground">
                         {task.assignee?.name || (
-                          <span className="text-zinc-500">Unassigned</span>
+                          <span className="text-muted-foreground">
+                            Unassigned
+                          </span>
                         )}
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-zinc-600 dark:text-zinc-400">
+                      <td className="px-6 py-5 text-sm text-muted-foreground">
                         <span className="flex items-center gap-2">
                           <CalendarDays
                             size={16}
@@ -466,7 +477,7 @@ export default function TasksPage() {
                             onClick={() => setSelectedCommentTask(task)}
                             title="View comments"
                             aria-label={`View comments for ${task.title}`}
-                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-700 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-orange-400"
+                            className={actionButtonClass}
                           >
                             <MessageSquare size={17} />
                           </button>
@@ -476,7 +487,7 @@ export default function TasksPage() {
                             onClick={() => setSelectedAttachmentTask(task)}
                             title="View attachments"
                             aria-label={`View attachments for ${task.title}`}
-                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-700 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-orange-400"
+                            className={actionButtonClass}
                           >
                             <Paperclip size={17} />
                           </button>
@@ -486,7 +497,7 @@ export default function TasksPage() {
                             onClick={() => handleEdit(task)}
                             title="Edit task"
                             aria-label={`Edit ${task.title}`}
-                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-700 transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-orange-400"
+                            className={actionButtonClass}
                           >
                             <Pencil size={17} />
                           </button>
@@ -496,7 +507,7 @@ export default function TasksPage() {
                             onClick={() => setDeleteId(task.id)}
                             title="Delete task"
                             aria-label={`Delete ${task.title}`}
-                            className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-700 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-600 dark:border-white/10 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:text-red-400"
+                            className="rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
                           >
                             <Trash2 size={17} />
                           </button>
@@ -510,13 +521,13 @@ export default function TasksPage() {
           </div>
 
           {/* Table Footer */}
-          <div className="border-t border-zinc-200 px-6 py-4 text-sm text-zinc-600 dark:border-white/10 dark:text-zinc-400">
+          <div className="border-t border-border px-6 py-4 text-sm text-muted-foreground">
             Showing{" "}
-            <span className="font-semibold text-zinc-900 dark:text-white">
+            <span className="font-semibold text-foreground">
               {filteredTasks.length}
             </span>{" "}
             of{" "}
-            <span className="font-semibold text-zinc-900 dark:text-white">
+            <span className="font-semibold text-foreground">
               {tasks.length}
             </span>{" "}
             tasks
@@ -534,7 +545,7 @@ export default function TasksPage() {
         >
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+              <label className={formLabelClass}>
                 Task Title *
               </label>
               <input
@@ -542,12 +553,12 @@ export default function TasksPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter task title"
-                className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white dark:placeholder:text-zinc-500"
+                className={formControlClass}
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+              <label className={formLabelClass}>
                 Description
               </label>
               <textarea
@@ -555,19 +566,19 @@ export default function TasksPage() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe the task..."
-                className="w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white dark:placeholder:text-zinc-500"
+                className={`${formControlClass} resize-none`}
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+              <label className={formLabelClass}>
                 Select Project *
               </label>
               <select
                 required
                 value={projectId}
                 onChange={(e) => setProjectId(e.target.value)}
-                className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white"
+                className={formControlClass}
               >
                 <option value="">Choose a project</option>
                 {projects.map((project) => (
@@ -580,7 +591,7 @@ export default function TasksPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+                <label className={formLabelClass}>
                   Priority
                 </label>
                 <select
@@ -588,7 +599,7 @@ export default function TasksPage() {
                   onChange={(e) =>
                     setPriority(e.target.value as TaskPriority)
                   }
-                  className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 dark:border-white/10 dark:bg-[#202020] dark:text-white"
+                  className={formControlClass}
                 >
                   <option value="Low">Low</option>
                   <option value="Medium">Medium</option>
@@ -597,13 +608,13 @@ export default function TasksPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+                <label className={formLabelClass}>
                   Assign To
                 </label>
                 <select
                   value={assigneeId}
                   onChange={(e) => setAssigneeId(e.target.value)}
-                  className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 dark:border-white/10 dark:bg-[#202020] dark:text-white"
+                  className={formControlClass}
                 >
                   <option value="">Unassigned</option>
                   {teamMembers.map((member) => (
@@ -614,7 +625,7 @@ export default function TasksPage() {
                 </select>
 
                 {teamMembers.length === 0 && (
-                  <p className="mt-2 text-xs text-zinc-500">
+                  <p className="mt-2 text-xs text-muted-foreground">
                     Add team members to assign tasks.
                   </p>
                 )}
@@ -623,13 +634,13 @@ export default function TasksPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+                <label className={formLabelClass}>
                   Status
                 </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 dark:border-white/10 dark:bg-[#202020] dark:text-white"
+                  className={formControlClass}
                 >
                   <option value="To Do">To Do</option>
                   <option value="In Progress">In Progress</option>
@@ -638,25 +649,25 @@ export default function TasksPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+                <label className={formLabelClass}>
                   Due Date
                 </label>
                 <input
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-3 text-sm text-zinc-900 outline-none transition focus:border-orange-500 dark:border-white/10 dark:bg-[#202020] dark:text-white"
+                  className={formControlClass}
                 />
               </div>
             </div>
 
             {/* Form Actions */}
-            <div className="flex flex-col-reverse justify-end gap-3 border-t border-zinc-200 pt-5 sm:flex-row dark:border-white/10">
+            <div className="flex flex-col-reverse justify-end gap-3 border-t border-border pt-5 sm:flex-row">
               <button
                 type="button"
                 onClick={resetForm}
                 disabled={saving}
-                className="rounded-full border border-zinc-300 bg-zinc-100 px-6 py-3 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-200 disabled:opacity-50 dark:border-white/10 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
+                className="rounded-full border border-border bg-muted px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-accent disabled:opacity-50"
               >
                 Cancel
               </button>

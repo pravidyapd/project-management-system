@@ -76,7 +76,7 @@ export default function DashboardPage() {
       value: projects.length,
       description: "All registered projects",
       icon: FolderKanban,
-      color: "bg-orange-500/10 text-orange-500 dark:text-orange-400",
+      color: "bg-orange-500/10 text-orange-500",
     },
     {
       title: "Active Projects",
@@ -187,20 +187,20 @@ export default function DashboardPage() {
         <div className="grid gap-6 xl:grid-cols-3">
 
           {/* Recent Projects */}
-          <section className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-xl shadow-zinc-200/40 dark:border-white/[0.07] dark:bg-[#171717] dark:shadow-black/20 xl:col-span-2">
+          <section className="rounded-3xl border border-border bg-card p-6 shadow-xl shadow-black/5 xl:col-span-2">
             <div className="mb-7 flex items-center justify-between gap-3">
               <div>
-                <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
+                <h2 className="text-lg font-bold text-foreground">
                   Recent Projects
                 </h2>
-                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-500">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Your latest project updates
                 </p>
               </div>
 
               <Link
                 href="/projects"
-                className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-semibold text-orange-600 transition hover:bg-orange-500/10 dark:text-orange-400"
+                className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-semibold text-orange-500 transition hover:bg-orange-500/10"
               >
                 View all
                 <ArrowUpRight size={16} />
@@ -219,18 +219,18 @@ export default function DashboardPage() {
                 {projects.slice(0, 5).map((project) => (
                   <div
                     key={project.id}
-                    className="group flex flex-col justify-between gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-500/30 hover:bg-zinc-100 dark:border-white/[0.06] dark:bg-[#1d1d1d] dark:hover:bg-[#222222] sm:flex-row sm:items-center"
+                    className="group flex flex-col justify-between gap-3 rounded-2xl border border-border bg-muted p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-500/30 hover:bg-accent sm:flex-row sm:items-center"
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="rounded-xl border border-orange-500/10 bg-orange-500/10 p-3 text-orange-600 transition group-hover:bg-orange-500 group-hover:text-black dark:text-orange-400">
+                      <div className="rounded-xl border border-orange-500/10 bg-orange-500/10 p-3 text-orange-500 transition group-hover:bg-orange-500 group-hover:text-black">
                         <FolderKanban size={20} />
                       </div>
 
                       <div className="min-w-0">
-                        <h3 className="truncate font-semibold text-zinc-900 dark:text-zinc-100">
+                        <h3 className="truncate font-semibold text-foreground">
                           {project.name}
                         </h3>
-                        <p className="mt-1 truncate text-xs text-zinc-500 dark:text-zinc-500">
+                        <p className="mt-1 truncate text-xs text-muted-foreground">
                           {project.description || "No description"}
                         </p>
                       </div>
@@ -244,12 +244,12 @@ export default function DashboardPage() {
           </section>
 
           {/* Task Overview */}
-          <section className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-xl shadow-zinc-200/40 dark:border-white/[0.07] dark:bg-[#171717] dark:shadow-black/20">
+          <section className="rounded-3xl border border-border bg-card p-6 shadow-xl shadow-black/5">
             <div className="mb-7">
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
+              <h2 className="text-lg font-bold text-foreground">
                 Task Overview
               </h2>
-              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-500">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Current task progress
               </p>
             </div>
@@ -260,12 +260,12 @@ export default function DashboardPage() {
                 className="relative flex h-40 w-40 items-center justify-center rounded-full p-[10px]"
                 style={{ background: progressGradient }}
               >
-                <div className="flex h-full w-full items-center justify-center rounded-full bg-white dark:bg-[#171717]">
+                <div className="flex h-full w-full items-center justify-center rounded-full bg-card">
                   <div className="text-center">
-                    <p className="text-4xl font-bold text-zinc-900 dark:text-white">
+                    <p className="text-4xl font-bold text-foreground">
                       {loading ? "..." : tasks.length}
                     </p>
-                    <p className="mt-1 text-xs text-zinc-500">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       Total Tasks
                     </p>
                   </div>
@@ -278,7 +278,7 @@ export default function DashboardPage() {
               {taskStatuses.map((status) => (
                 <div key={status.name}>
                   <div className="mb-2 flex justify-between text-sm">
-                    <span className="font-medium text-zinc-600 dark:text-zinc-400">
+                    <span className="font-medium text-muted-foreground">
                       {status.name}
                     </span>
                     <span className={`font-bold ${status.text}`}>
@@ -286,7 +286,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
 
-                  <div className="h-2 overflow-hidden rounded-full bg-zinc-200 dark:bg-white/[0.07]">
+                  <div className="h-2 overflow-hidden rounded-full bg-muted">
                     <div
                       className={`h-full rounded-full transition-all duration-700 ${status.color}`}
                       style={{
@@ -300,7 +300,7 @@ export default function DashboardPage() {
 
             <Link
               href="/tasks"
-              className="mt-8 flex w-full items-center justify-center gap-2 rounded-full border border-orange-500/30 py-3 text-sm font-semibold text-orange-600 transition-all hover:bg-orange-500 hover:text-black dark:text-orange-400"
+              className="mt-8 flex w-full items-center justify-center gap-2 rounded-full border border-orange-500/30 py-3 text-sm font-semibold text-orange-500 transition-all hover:bg-orange-500 hover:text-black"
             >
               View All Tasks
               <ArrowUpRight size={17} />
@@ -311,31 +311,31 @@ export default function DashboardPage() {
         {/* Bottom Information Cards */}
         <div className="grid gap-5 md:grid-cols-2">
 
-          <div className="group flex items-center gap-4 overflow-hidden rounded-3xl border border-orange-500/20 bg-gradient-to-br from-orange-500/15 to-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 dark:to-[#171717]">
+          <div className="group flex items-center gap-4 overflow-hidden rounded-3xl border border-orange-500/20 bg-gradient-to-br from-orange-500/15 to-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40">
             <div className="rounded-2xl bg-orange-500 p-4 text-black shadow-lg shadow-orange-500/20 transition-transform group-hover:rotate-6">
               <CalendarDays size={26} />
             </div>
 
             <div>
-              <h3 className="font-bold text-zinc-900 dark:text-white">
+              <h3 className="font-bold text-foreground">
                 Stay organized
               </h3>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Manage your projects and deadlines in one place.
               </p>
             </div>
           </div>
 
-          <div className="group flex items-center gap-4 rounded-3xl border border-zinc-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/30 dark:border-white/[0.07] dark:bg-[#171717]">
+          <div className="group flex items-center gap-4 rounded-3xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/30">
             <div className="rounded-2xl bg-emerald-500/10 p-4 text-emerald-600 transition-transform group-hover:scale-105 dark:text-emerald-400">
               <Clock size={26} />
             </div>
 
             <div>
-              <h3 className="font-bold text-zinc-900 dark:text-white">
+              <h3 className="font-bold text-foreground">
                 Keep track of progress
               </h3>
-              <p className="mt-1 text-sm text-zinc-500">
+              <p className="mt-1 text-sm text-muted-foreground">
                 {completedTasks} tasks completed out of {tasks.length}.
               </p>
             </div>

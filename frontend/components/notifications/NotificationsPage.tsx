@@ -232,35 +232,34 @@ export default function NotificationsPage() {
   return (
     <AppLayout>
       <div className="mx-auto max-w-7xl space-y-8">
-        {/* Page Header */}
-        <div>
-          <PageHeader
-            title="Notifications"
-            description="Stay updated with your projects and tasks."
-            action={
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={() => fetchNotifications(true)}
-                  className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-5 py-3 text-sm font-semibold text-zinc-700 transition hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-[#202020] dark:text-zinc-300 dark:hover:text-orange-400"
-                >
-                  <RefreshCw size={17} />
-                  Refresh
-                </button>
 
-                <button
-                  type="button"
-                  onClick={markAllAsRead}
-                  disabled={unreadCount === 0 || markingAll}
-                  className="flex items-center gap-2 rounded-full bg-orange-500 px-5 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  <CheckCheck size={17} />
-                  {markingAll ? "Marking..." : "Mark all read"}
-                </button>
-              </div>
-            }
-          />
-        </div>
+        {/* Page Header */}
+        <PageHeader
+          title="Notifications"
+          description="Stay updated with your projects and tasks."
+          action={
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() => fetchNotifications(true)}
+                className="flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground transition hover:border-orange-500/40 hover:bg-accent hover:text-orange-500"
+              >
+                <RefreshCw size={17} />
+                Refresh
+              </button>
+
+              <button
+                type="button"
+                onClick={markAllAsRead}
+                disabled={unreadCount === 0 || markingAll}
+                className="flex items-center gap-2 rounded-full bg-orange-500 px-5 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <CheckCheck size={17} />
+                {markingAll ? "Marking..." : "Mark all read"}
+              </button>
+            </div>
+          }
+        />
 
         {/* Statistics */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -268,7 +267,7 @@ export default function NotificationsPage() {
             title="Total Notifications"
             value={notifications.length}
             icon={Bell}
-            color="bg-orange-500/10 text-orange-500 dark:text-orange-400"
+            color="bg-orange-500/10 text-orange-500"
           />
 
           <StatCard
@@ -287,14 +286,14 @@ export default function NotificationsPage() {
         </div>
 
         {/* Notifications List */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xl shadow-black/5 sm:p-7 dark:border-white/[0.07] dark:bg-[#171717] dark:shadow-black/20">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-xl shadow-black/5 sm:p-7">
           <div className="mb-6 flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
             <div>
-              <h2 className="text-xl font-bold text-zinc-900 dark:text-white">
+              <h2 className="text-xl font-bold text-foreground">
                 All Notifications
               </h2>
 
-              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+              <p className="mt-1 text-sm text-muted-foreground">
                 {unreadCount} unread notifications
               </p>
             </div>
@@ -316,7 +315,7 @@ export default function NotificationsPage() {
                 className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${
                   filter === item
                     ? "bg-orange-500 text-black shadow-lg shadow-orange-500/10"
-                    : "border border-zinc-200 bg-zinc-100 text-zinc-600 hover:border-orange-500/30 hover:text-orange-600 dark:border-white/10 dark:bg-[#222222] dark:text-zinc-400 dark:hover:text-orange-400"
+                    : "border border-border bg-muted text-muted-foreground hover:border-orange-500/30 hover:text-orange-500"
                 }`}
               >
                 {item}
@@ -326,7 +325,7 @@ export default function NotificationsPage() {
                     className={`ml-2 rounded-full px-2 py-0.5 text-xs ${
                       filter === item
                         ? "bg-black/10"
-                        : "bg-zinc-200 dark:bg-white/10"
+                        : "bg-background"
                     }`}
                   >
                     {unreadCount}
@@ -363,7 +362,7 @@ export default function NotificationsPage() {
                   key={notification.id}
                   className={`group flex flex-col gap-4 rounded-xl border p-4 transition-all duration-200 sm:flex-row sm:items-center ${
                     notification.read
-                      ? "border-zinc-200 bg-zinc-50 hover:border-zinc-300 hover:bg-zinc-100 dark:border-white/[0.07] dark:bg-[#1d1d1d] dark:hover:border-white/15 dark:hover:bg-[#222222]"
+                      ? "border-border bg-muted hover:border-orange-500/20 hover:bg-accent"
                       : "border-orange-500/20 bg-orange-500/[0.04] hover:border-orange-500/40 hover:bg-orange-500/[0.07]"
                   }`}
                 >
@@ -379,7 +378,7 @@ export default function NotificationsPage() {
                   {/* Notification Details */}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-bold text-zinc-900 dark:text-white">
+                      <h3 className="font-bold text-foreground">
                         {notification.title}
                       </h3>
 
@@ -388,17 +387,17 @@ export default function NotificationsPage() {
                       )}
 
                       {!notification.read && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-orange-500">
                           New
                         </span>
                       )}
                     </div>
 
-                    <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                       {notification.description}
                     </p>
 
-                    <p className="mt-2 text-xs text-zinc-500">
+                    <p className="mt-2 text-xs text-muted-foreground">
                       {formatTime(notification.createdAt)}
                     </p>
                   </div>
@@ -411,7 +410,7 @@ export default function NotificationsPage() {
                         onClick={() => markAsRead(notification.id)}
                         title="Mark as read"
                         aria-label="Mark as read"
-                        className="rounded-full border border-orange-500/20 bg-orange-500/10 p-2.5 text-orange-600 transition hover:bg-orange-500 hover:text-black dark:text-orange-400"
+                        className="rounded-full border border-orange-500/20 bg-orange-500/10 p-2.5 text-orange-500 transition hover:bg-orange-500 hover:text-black"
                       >
                         <Check size={18} />
                       </button>
@@ -422,7 +421,7 @@ export default function NotificationsPage() {
                       onClick={() => setDeleteId(notification.id)}
                       title="Delete notification"
                       aria-label="Delete notification"
-                      className="rounded-full border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-500 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-600 dark:border-white/10 dark:bg-[#292929] dark:text-zinc-400 dark:hover:text-red-400"
+                      className="rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-500"
                     >
                       <Trash2 size={18} />
                     </button>

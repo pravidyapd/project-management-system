@@ -130,23 +130,23 @@ export default function TaskComments({
       onMouseDown={onClose}
     >
       <div
-        className="page-enter flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-black/20 dark:border-white/10 dark:bg-[#171717] dark:shadow-black/50"
+        className="page-enter flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-black/20 dark:shadow-black/50"
         onMouseDown={(event) => event.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 p-5 dark:border-white/10 dark:bg-[#1c1c1c]">
+        <div className="flex items-center justify-between border-b border-border bg-muted p-5">
           <div>
             <div className="flex items-center gap-2">
               <MessageSquare
                 size={19}
                 className="text-orange-600 dark:text-orange-400"
               />
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
+              <h2 className="text-lg font-bold text-foreground">
                 Task Comments
               </h2>
             </div>
 
-            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mt-1 text-sm text-muted-foreground">
               {taskTitle}
             </p>
           </div>
@@ -155,7 +155,7 @@ export default function TaskComments({
             type="button"
             onClick={onClose}
             aria-label="Close comments"
-            className="rounded-full p-2 text-zinc-500 transition-all hover:bg-orange-500/10 hover:text-orange-600 dark:text-zinc-400 dark:hover:text-orange-400"
+            className="rounded-full p-2 text-muted-foreground transition-all hover:bg-orange-500/10 hover:text-orange-600 dark:hover:text-orange-400"
           >
             <X size={20} />
           </button>
@@ -164,19 +164,19 @@ export default function TaskComments({
         {/* Comments List */}
         <div className="min-h-[200px] flex-1 space-y-4 overflow-y-auto p-5">
           {loading ? (
-            <p className="py-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="py-8 text-center text-sm text-muted-foreground">
               Loading comments...
             </p>
           ) : comments.length === 0 ? (
             <div className="py-10 text-center">
               <MessageSquare
                 size={32}
-                className="mx-auto mb-3 text-zinc-400 dark:text-zinc-600"
+                className="mx-auto mb-3 text-muted-foreground"
               />
-              <p className="font-medium text-zinc-800 dark:text-zinc-300">
+              <p className="font-medium text-foreground">
                 No comments yet
               </p>
-              <p className="mt-1 text-sm text-zinc-500">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Be the first to add a comment.
               </p>
             </div>
@@ -184,15 +184,15 @@ export default function TaskComments({
             comments.map((comment) => (
               <div
                 key={comment.id}
-                className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-white/[0.06] dark:bg-[#202020]"
+                className="rounded-xl border border-border bg-muted p-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-zinc-900 dark:text-white">
+                    <p className="text-sm font-semibold text-foreground">
                       {comment.user?.name || "Unknown User"}
                     </p>
 
-                    <p className="mt-1 text-xs text-zinc-500">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       {new Date(comment.createdAt).toLocaleString()}
                     </p>
                   </div>
@@ -203,13 +203,13 @@ export default function TaskComments({
                     disabled={deletingId === comment.id}
                     title="Delete comment"
                     aria-label="Delete comment"
-                    className="rounded-lg p-2 text-zinc-500 transition hover:bg-red-500/10 hover:text-red-600 disabled:opacity-50 dark:hover:text-red-400"
+                    className="rounded-lg p-2 text-muted-foreground transition hover:bg-red-500/10 hover:text-red-600 disabled:opacity-50 dark:hover:text-red-400"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
 
-                <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-zinc-700 dark:text-zinc-300">
+                <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-foreground">
                   {comment.content}
                 </p>
               </div>
@@ -220,9 +220,9 @@ export default function TaskComments({
         {/* Add Comment */}
         <form
           onSubmit={handleSubmit}
-          className="border-t border-zinc-200 p-5 dark:border-white/10"
+          className="border-t border-border p-5"
         >
-          <label className="mb-2 block text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+          <label className="mb-2 block text-sm font-semibold text-foreground">
             Add a comment
           </label>
 
@@ -232,14 +232,14 @@ export default function TaskComments({
             onChange={(e) => setContent(e.target.value)}
             placeholder="Write your comment..."
             maxLength={2000}
-            className="w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 dark:border-white/10 dark:bg-[#202020] dark:text-white dark:placeholder:text-zinc-500"
+            className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15"
           />
 
           <div className="mt-3 flex justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900 dark:border-white/10 dark:text-zinc-300 dark:hover:bg-white/10 dark:hover:text-white"
+              className="rounded-lg border border-border px-5 py-2 text-sm font-medium text-foreground transition hover:bg-accent"
             >
               Done
             </button>

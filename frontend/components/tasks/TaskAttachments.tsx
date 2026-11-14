@@ -167,23 +167,23 @@ export default function TaskAttachments({
       onMouseDown={onClose}
     >
       <div
-        className="page-enter flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-black/20 dark:border-white/10 dark:bg-[#171717] dark:shadow-black/50"
+        className="page-enter flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-black/20 dark:shadow-black/50"
         onMouseDown={(event) => event.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 p-5 dark:border-white/10 dark:bg-[#1c1c1c]">
+        <div className="flex items-center justify-between border-b border-border bg-muted p-5">
           <div>
             <div className="flex items-center gap-2">
               <Paperclip
                 size={19}
                 className="text-orange-600 dark:text-orange-400"
               />
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
+              <h2 className="text-lg font-bold text-foreground">
                 Task Attachments
               </h2>
             </div>
 
-            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mt-1 text-sm text-muted-foreground">
               {taskTitle}
             </p>
           </div>
@@ -192,14 +192,14 @@ export default function TaskAttachments({
             type="button"
             onClick={onClose}
             aria-label="Close attachments"
-            className="rounded-full p-2 text-zinc-500 transition-all hover:bg-orange-500/10 hover:text-orange-600 dark:text-zinc-400 dark:hover:text-orange-400"
+            className="rounded-full p-2 text-muted-foreground transition-all hover:bg-orange-500/10 hover:text-orange-600 dark:hover:text-orange-400"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Upload Section */}
-        <div className="border-b border-zinc-200 p-5 dark:border-white/10">
+        <div className="border-b border-border p-5">
           <label
             htmlFor="task-file-upload"
             className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-orange-500/40 bg-orange-500/5 px-4 py-5 text-sm font-medium text-orange-600 transition hover:border-orange-500 hover:bg-orange-500/10 dark:text-orange-400"
@@ -216,7 +216,7 @@ export default function TaskAttachments({
             disabled={uploading}
           />
 
-          <p className="mt-2 text-center text-xs text-zinc-500">
+          <p className="mt-2 text-center text-xs text-muted-foreground">
             Maximum file size: 10 MB
           </p>
         </div>
@@ -224,19 +224,19 @@ export default function TaskAttachments({
         {/* Attachments List */}
         <div className="min-h-[200px] flex-1 space-y-3 overflow-y-auto p-5">
           {loading ? (
-            <p className="py-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="py-8 text-center text-sm text-muted-foreground">
               Loading attachments...
             </p>
           ) : attachments.length === 0 ? (
             <div className="py-10 text-center">
               <Paperclip
                 size={32}
-                className="mx-auto mb-3 text-zinc-400 dark:text-zinc-600"
+                className="mx-auto mb-3 text-muted-foreground"
               />
-              <p className="font-medium text-zinc-800 dark:text-zinc-300">
+              <p className="font-medium text-foreground">
                 No attachments yet
               </p>
-              <p className="mt-1 text-sm text-zinc-500">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Upload a file to attach it to this task.
               </p>
             </div>
@@ -244,7 +244,7 @@ export default function TaskAttachments({
             attachments.map((attachment) => (
               <div
                 key={attachment.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-white/[0.06] dark:bg-[#202020]"
+                className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted p-4"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <File
@@ -253,11 +253,11 @@ export default function TaskAttachments({
                   />
 
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-zinc-900 dark:text-white">
+                    <p className="truncate text-sm font-semibold text-foreground">
                       {attachment.fileName}
                     </p>
 
-                    <p className="mt-1 text-xs text-zinc-500">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       {formatFileSize(attachment.fileSize)}
                       {" · "}
                       {new Date(
@@ -274,7 +274,7 @@ export default function TaskAttachments({
                     disabled={downloadingId === attachment.id}
                     title="Download file"
                     aria-label="Download file"
-                    className="rounded-lg p-2 text-zinc-500 transition hover:bg-orange-500/10 hover:text-orange-600 disabled:opacity-50 dark:text-zinc-400 dark:hover:text-orange-400"
+                    className="rounded-lg p-2 text-muted-foreground transition hover:bg-orange-500/10 hover:text-orange-600 disabled:opacity-50 dark:hover:text-orange-400"
                   >
                     <Download size={17} />
                   </button>
@@ -285,7 +285,7 @@ export default function TaskAttachments({
                     disabled={deletingId === attachment.id}
                     title="Delete file"
                     aria-label="Delete file"
-                    className="rounded-lg p-2 text-zinc-500 transition hover:bg-red-500/10 hover:text-red-600 disabled:opacity-50 dark:hover:text-red-400"
+                    className="rounded-lg p-2 text-muted-foreground transition hover:bg-red-500/10 hover:text-red-600 disabled:opacity-50 dark:hover:text-red-400"
                   >
                     <Trash2 size={17} />
                   </button>
@@ -296,11 +296,11 @@ export default function TaskAttachments({
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end border-t border-zinc-200 p-5 dark:border-white/10">
+        <div className="flex justify-end border-t border-border p-5">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900 dark:border-white/10 dark:text-zinc-300 dark:hover:bg-white/10 dark:hover:text-white"
+            className="rounded-lg border border-border px-5 py-2 text-sm font-medium text-foreground transition hover:bg-accent"
           >
             Done
           </button>

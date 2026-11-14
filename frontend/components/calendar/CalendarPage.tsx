@@ -62,7 +62,7 @@ function getPriorityStyle(priority?: string) {
     case "Low":
       return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400";
     default:
-      return "bg-zinc-500/10 text-zinc-600 border-zinc-300 dark:text-zinc-400 dark:border-white/10";
+      return "bg-muted text-muted-foreground border-border";
   }
 }
 
@@ -288,19 +288,20 @@ export default function CalendarPage() {
   return (
     <AppLayout>
       <div className="mx-auto max-w-7xl space-y-8">
+
         {/* Header */}
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
               Calendar
             </h1>
-            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mt-1 text-sm text-muted-foreground">
               Manage your schedule and keep track of deadlines.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex rounded-xl border border-zinc-200 bg-white p-1 dark:border-white/[0.08] dark:bg-[#171717]">
+            <div className="flex rounded-xl border border-border bg-card p-1">
               {(["Month", "Week", "Day"] as CalendarView[]).map((item) => (
                 <button
                   key={item}
@@ -309,7 +310,7 @@ export default function CalendarPage() {
                   className={`rounded-lg px-3 py-2 text-xs font-semibold transition-all duration-200 ${
                     view === item
                       ? "bg-orange-500 text-black shadow-lg shadow-orange-500/20"
-                      : "text-zinc-600 hover:bg-orange-500/10 hover:text-orange-600 dark:text-zinc-400 dark:hover:text-orange-400"
+                      : "text-muted-foreground hover:bg-orange-500/10 hover:text-orange-500"
                   }`}
                 >
                   {item}
@@ -321,14 +322,16 @@ export default function CalendarPage() {
 
         {/* Calendar and Side Panels */}
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.8fr)_minmax(300px,0.85fr)]">
+
           {/* Calendar */}
-          <section className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl shadow-black/5 dark:border-white/[0.07] dark:bg-[#171717] dark:shadow-black/20">
-            <div className="flex flex-col justify-between gap-4 border-b border-zinc-200 p-5 sm:flex-row sm:items-center dark:border-white/[0.07]">
+          <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl shadow-black/5">
+
+            <div className="flex flex-col justify-between gap-4 border-b border-border p-5 sm:flex-row sm:items-center">
               <div>
-                <h2 className="text-xl font-bold text-zinc-900 dark:text-white">
+                <h2 className="text-xl font-bold text-foreground">
                   {heading()}
                 </h2>
-                <p className="mt-1 text-xs text-zinc-500">
+                <p className="mt-1 text-xs text-muted-foreground">
                   {view === "Month"
                     ? "Your monthly schedule"
                     : view === "Week"
@@ -342,7 +345,7 @@ export default function CalendarPage() {
                   type="button"
                   onClick={() => navigateDate(-1)}
                   aria-label="Previous period"
-                  className="rounded-lg border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-600 transition-all hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-[#222222] dark:text-zinc-300 dark:hover:text-orange-400"
+                  className="rounded-lg border border-border bg-muted p-2.5 text-muted-foreground transition-all hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-500"
                 >
                   <ChevronLeft size={18} />
                 </button>
@@ -359,7 +362,7 @@ export default function CalendarPage() {
                   type="button"
                   onClick={() => navigateDate(1)}
                   aria-label="Next period"
-                  className="rounded-lg border border-zinc-200 bg-zinc-100 p-2.5 text-zinc-600 transition-all hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-600 dark:border-white/10 dark:bg-[#222222] dark:text-zinc-300 dark:hover:text-orange-400"
+                  className="rounded-lg border border-border bg-muted p-2.5 text-muted-foreground transition-all hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-500"
                 >
                   <ChevronRight size={18} />
                 </button>
@@ -367,11 +370,11 @@ export default function CalendarPage() {
             </div>
 
             {view !== "Day" && (
-              <div className="grid grid-cols-7 border-b border-zinc-200 dark:border-white/[0.07]">
+              <div className="grid grid-cols-7 border-b border-border">
                 {weekdays.map((day) => (
                   <div
                     key={day}
-                    className="py-3 text-center text-[10px] font-bold uppercase tracking-wider text-zinc-500 sm:text-xs"
+                    className="py-3 text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:text-xs"
                   >
                     {day}
                   </div>
@@ -379,15 +382,17 @@ export default function CalendarPage() {
               </div>
             )}
 
-            <div className={`grid ${
-              view === "Day" ? "grid-cols-1" : "grid-cols-7"
-            }`}>
+            <div
+              className={`grid ${
+                view === "Day" ? "grid-cols-1" : "grid-cols-7"
+              }`}
+            >
               {calendarDates.map((date, index) => {
                 if (!date) {
                   return (
                     <div
                       key={`empty-${index}`}
-                      className="min-h-24 border-b border-r border-zinc-100 sm:min-h-28 dark:border-white/[0.05]"
+                      className="min-h-24 border-b border-r border-border sm:min-h-28"
                     />
                   );
                 }
@@ -403,7 +408,7 @@ export default function CalendarPage() {
                     type="button"
                     onClick={() => setSelectedDate(date)}
                     aria-pressed={isSelected}
-                    className={`group min-h-24 border-b border-r border-zinc-100 p-2 text-left transition-all duration-200 sm:min-h-28 sm:p-3 dark:border-white/[0.05] ${
+                    className={`group min-h-24 border-b border-r border-border p-2 text-left transition-all duration-200 sm:min-h-28 sm:p-3 ${
                       view === "Day" ? "min-h-48" : ""
                     } ${
                       isSelected
@@ -417,15 +422,15 @@ export default function CalendarPage() {
                           isToday
                             ? "bg-orange-500 text-black shadow-lg shadow-orange-500/20"
                             : isSelected
-                              ? "border border-orange-500/50 text-orange-600 dark:text-orange-400"
-                              : "text-zinc-700 group-hover:bg-orange-500/10 group-hover:text-orange-600 dark:text-zinc-300 dark:group-hover:text-orange-400"
+                              ? "border border-orange-500/50 text-orange-500"
+                              : "text-foreground group-hover:bg-orange-500/10 group-hover:text-orange-500"
                         }`}
                       >
                         {date.getDate()}
                       </span>
 
                       {dayTasks.length > 0 && (
-                        <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[9px] text-zinc-600 dark:bg-white/[0.06] dark:text-zinc-400">
+                        <span className="rounded-full bg-muted px-2 py-0.5 text-[9px] text-muted-foreground">
                           {dayTasks.length}
                         </span>
                       )}
@@ -445,7 +450,7 @@ export default function CalendarPage() {
                       ))}
 
                       {dayTasks.length > (view === "Day" ? 10 : 3) && (
-                        <p className="px-1 text-[9px] font-semibold text-orange-600 dark:text-orange-400">
+                        <p className="px-1 text-[9px] font-semibold text-orange-500">
                           +{dayTasks.length - (view === "Day" ? 10 : 3)} more
                         </p>
                       )}
@@ -456,16 +461,16 @@ export default function CalendarPage() {
             </div>
 
             {/* Legend */}
-            <div className="flex flex-wrap gap-x-5 gap-y-3 border-t border-zinc-200 p-4 dark:border-white/[0.07]">
-              <span className="flex items-center gap-2 text-[11px] text-zinc-600 dark:text-zinc-400">
+            <div className="flex flex-wrap gap-x-5 gap-y-3 border-t border-border p-4">
+              <span className="flex items-center gap-2 text-[11px] text-muted-foreground">
                 <span className="h-2.5 w-2.5 rounded-sm bg-orange-500" />
                 To Do
               </span>
-              <span className="flex items-center gap-2 text-[11px] text-zinc-600 dark:text-zinc-400">
+              <span className="flex items-center gap-2 text-[11px] text-muted-foreground">
                 <span className="h-2.5 w-2.5 rounded-sm bg-blue-500" />
                 In Progress
               </span>
-              <span className="flex items-center gap-2 text-[11px] text-zinc-600 dark:text-zinc-400">
+              <span className="flex items-center gap-2 text-[11px] text-muted-foreground">
                 <span className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />
                 Completed
               </span>
@@ -474,19 +479,20 @@ export default function CalendarPage() {
 
           {/* Right Side Panels */}
           <div className="space-y-5">
+
             {/* Upcoming Deadlines */}
-            <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xl shadow-black/5 dark:border-white/[0.07] dark:bg-[#171717] dark:shadow-black/20">
+            <section className="rounded-2xl border border-border bg-card p-5 shadow-xl shadow-black/5">
               <div className="mb-4 flex items-center justify-between">
                 <div>
-                  <h2 className="font-bold text-zinc-900 dark:text-white">
+                  <h2 className="font-bold text-foreground">
                     Upcoming Deadlines
                   </h2>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Your next deadlines
                   </p>
                 </div>
                 <div className="rounded-xl border border-orange-500/20 bg-orange-500/10 p-2.5">
-                  <CalendarDays size={19} className="text-orange-600 dark:text-orange-400" />
+                  <CalendarDays size={19} className="text-orange-500" />
                 </div>
               </div>
 
@@ -506,21 +512,21 @@ export default function CalendarPage() {
                     return (
                       <div
                         key={task.id}
-                        className="rounded-xl border border-zinc-200 bg-zinc-50 p-3 transition-all hover:border-orange-500/30 hover:bg-zinc-100 dark:border-white/[0.06] dark:bg-[#1d1d1d] dark:hover:bg-[#222222]"
+                        className="rounded-xl border border-border bg-muted p-3 transition-all hover:border-orange-500/30 hover:bg-accent"
                       >
                         <div className="flex items-start gap-3">
                           <div className="mt-0.5 rounded-lg bg-orange-500/10 p-2">
-                            <Clock size={15} className="text-orange-600 dark:text-orange-400" />
+                            <Clock size={15} className="text-orange-500" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-xs font-semibold text-zinc-900 dark:text-white">
+                            <p className="truncate text-xs font-semibold text-foreground">
                               {task.title}
                             </p>
-                            <p className="mt-1 truncate text-[10px] text-zinc-500">
+                            <p className="mt-1 truncate text-[10px] text-muted-foreground">
                               {getProjectName(task.projectId)}
                             </p>
                             <div className="mt-2 flex flex-wrap items-center gap-2">
-                              <span className="text-[10px] text-zinc-600 dark:text-zinc-400">
+                              <span className="text-[10px] text-muted-foreground">
                                 {dueToday
                                   ? "Today"
                                   : dueDate.toLocaleDateString("en-US", {
@@ -542,18 +548,18 @@ export default function CalendarPage() {
             </section>
 
             {/* Overdue Tasks */}
-            <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xl shadow-black/5 dark:border-white/[0.07] dark:bg-[#171717] dark:shadow-black/20">
+            <section className="rounded-2xl border border-border bg-card p-5 shadow-xl shadow-black/5">
               <div className="mb-4 flex items-center justify-between">
                 <div>
-                  <h2 className="font-bold text-zinc-900 dark:text-white">
+                  <h2 className="font-bold text-foreground">
                     Overdue Tasks
                   </h2>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Tasks past their due date
                   </p>
                 </div>
                 <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-2.5">
-                  <AlertCircle size={19} className="text-red-600 dark:text-red-400" />
+                  <AlertCircle size={19} className="text-red-500" />
                 </div>
               </div>
 
@@ -561,11 +567,14 @@ export default function CalendarPage() {
                 <LoadingSpinner message="Loading overdue tasks..." />
               ) : overdueTasks.length === 0 ? (
                 <div className="rounded-xl border border-emerald-500/10 bg-emerald-500/[0.04] p-4 text-center">
-                  <CheckCircle2 className="mx-auto mb-2 text-emerald-600 dark:text-emerald-400" size={22} />
+                  <CheckCircle2
+                    className="mx-auto mb-2 text-emerald-500"
+                    size={22}
+                  />
                   <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                     All caught up!
                   </p>
-                  <p className="mt-1 text-[10px] text-zinc-500">
+                  <p className="mt-1 text-[10px] text-muted-foreground">
                     No overdue tasks.
                   </p>
                 </div>
@@ -577,16 +586,19 @@ export default function CalendarPage() {
                       className="rounded-xl border border-red-500/10 bg-red-500/[0.04] p-3 transition-all hover:border-red-500/30"
                     >
                       <div className="flex items-start gap-3">
-                        <Circle size={15} className="mt-0.5 shrink-0 text-red-500 dark:text-red-400" />
+                        <Circle
+                          size={15}
+                          className="mt-0.5 shrink-0 text-red-500"
+                        />
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-xs font-semibold text-zinc-900 dark:text-white">
+                          <p className="truncate text-xs font-semibold text-foreground">
                             {task.title}
                           </p>
-                          <p className="mt-1 truncate text-[10px] text-zinc-500">
+                          <p className="mt-1 truncate text-[10px] text-muted-foreground">
                             {getProjectName(task.projectId)}
                           </p>
                           <div className="mt-2 flex items-center justify-between gap-2">
-                            <span className="text-[10px] text-red-600 dark:text-red-400">
+                            <span className="text-[10px] text-red-500">
                               Due {parseDueDate(task.dueDate!).toLocaleDateString()}
                             </span>
                             <span className={`rounded-md border px-1.5 py-0.5 text-[9px] ${getPriorityStyle(task.priority)}`}>
@@ -604,14 +616,14 @@ export default function CalendarPage() {
         </div>
 
         {/* Selected Date Details */}
-        <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-xl shadow-black/5 md:p-6 dark:border-white/[0.07] dark:bg-[#171717] dark:shadow-black/20">
+        <section className="rounded-2xl border border-border bg-card p-5 shadow-xl shadow-black/5 md:p-6">
           <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
             <div className="flex items-center gap-3">
               <div className="rounded-xl border border-orange-500/20 bg-orange-500/10 p-3">
-                <ListTodo size={21} className="text-orange-600 dark:text-orange-400" />
+                <ListTodo size={21} className="text-orange-500" />
               </div>
               <div>
-                <h2 className="font-bold text-zinc-900 dark:text-white">
+                <h2 className="font-bold text-foreground">
                   {selectedDate
                     ? selectedDate.toLocaleDateString("en-US", {
                         weekday: "long",
@@ -621,14 +633,14 @@ export default function CalendarPage() {
                       })
                     : "Selected Date"}
                 </h2>
-                <p className="mt-1 text-xs text-zinc-500">
+                <p className="mt-1 text-xs text-muted-foreground">
                   {selectedDateTasks.length} scheduled task(s)
                 </p>
               </div>
             </div>
 
             {selectedDate && today && isSameDay(selectedDate, today) && (
-              <span className="w-fit rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1.5 text-[10px] font-semibold text-orange-600 dark:text-orange-400">
+              <span className="w-fit rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1.5 text-[10px] font-semibold text-orange-500">
                 TODAY
               </span>
             )}
@@ -646,21 +658,27 @@ export default function CalendarPage() {
               {selectedDateTasks.map((task) => (
                 <div
                   key={task.id}
-                  className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 transition-all hover:border-orange-500/30 hover:bg-zinc-100 dark:border-white/[0.07] dark:bg-[#1d1d1d] dark:hover:bg-[#222222]"
+                  className="rounded-xl border border-border bg-muted p-4 transition-all hover:border-orange-500/30 hover:bg-accent"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <h3 className="truncate text-sm font-semibold text-zinc-900 dark:text-white">
+                      <h3 className="truncate text-sm font-semibold text-foreground">
                         {task.title}
                       </h3>
-                      <p className="mt-1 text-xs text-zinc-500">
+                      <p className="mt-1 text-xs text-muted-foreground">
                         {getProjectName(task.projectId)}
                       </p>
                     </div>
                     {isCompleted(task) ? (
-                      <CheckCircle2 size={18} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+                      <CheckCircle2
+                        size={18}
+                        className="shrink-0 text-emerald-500"
+                      />
                     ) : (
-                      <Circle size={18} className="shrink-0 text-orange-600 dark:text-orange-400" />
+                      <Circle
+                        size={18}
+                        className="shrink-0 text-orange-500"
+                      />
                     )}
                   </div>
 
