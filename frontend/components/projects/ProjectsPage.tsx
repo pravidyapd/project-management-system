@@ -257,7 +257,7 @@ export default function ProjectsPage() {
                   filteredProjects.map((project) => (
                     <tr
                       key={project.id}
-                      className="transition-colors duration-200 hover:bg-accent"
+                      className="transition-colors duration-200 "
                     >
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
@@ -286,7 +286,7 @@ export default function ProjectsPage() {
                             onClick={() => handleEdit(project)}
                             title="Edit project"
                             aria-label={`Edit ${project.name}`}
-                            className="rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-500"
+                            className="rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-500 cursor-pointer"
                           >
                             <Pencil size={17} />
                           </button>
@@ -296,7 +296,7 @@ export default function ProjectsPage() {
                             onClick={() => setDeleteId(project.id)}
                             title="Delete project"
                             aria-label={`Delete ${project.name}`}
-                            className="rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-500"
+                            className="rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
                           >
                             <Trash2 size={17} />
                           </button>

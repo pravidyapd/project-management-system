@@ -421,7 +421,7 @@ export default function TasksPage() {
                   filteredTasks.map((task) => (
                     <tr
                       key={task.id}
-                      className="transition-colors duration-200 hover:bg-accent"
+                     
                     >
                       <td className="px-6 py-5">
                         <p className="font-semibold text-foreground">
@@ -471,7 +471,7 @@ export default function TasksPage() {
                       </td>
 
                       <td className="px-6 py-5">
-                        <div className="flex justify-end gap-2">
+                        <div className="flex justify-end gap-2 ">
                           <button
                             type="button"
                             onClick={() => setSelectedCommentTask(task)}
@@ -507,7 +507,7 @@ export default function TasksPage() {
                             onClick={() => setDeleteId(task.id)}
                             title="Delete task"
                             aria-label={`Delete ${task.title}`}
-                            className="rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400"
+                            className="rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 cursor-pointer"
                           >
                             <Trash2 size={17} />
                           </button>

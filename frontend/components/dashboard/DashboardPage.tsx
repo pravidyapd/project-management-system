@@ -1,35 +1,58 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import AppLayout from "@/components/layout/AppLayout";
 
-import StatCard from "@/components/common/StatCard";
-import StatusBadge from "@/components/common/StatusBadge";
-import EmptyState from "@/components/common/EmptyState";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
+import AppLayout from "@/components/layout/AppLayout";
 import PageHeader from "@/components/common/PageHeader";
+
+import DashboardStats from "@/components/dashboard/DashboardStats";
+import AnalyticsSummary from "@/components/dashboard/AnalyticsSummary";
+import TaskCreationTrend from "@/components/dashboard/TaskCreationTrend";
+import PriorityDistribution from "@/components/dashboard/PriorityDistribution";
+import ProjectProgress from "@/components/dashboard/ProjectProgress";
+import RecentProjects from "@/components/dashboard/RecentProjects";
+import TaskOverview from "@/components/dashboard/TaskOverview";
+import DashboardInfoCards from "@/components/dashboard/DashboardInfoCards";
+import ReportsAnalytics from "@/components/dashboard/ReportsAnalytics";
 
 import { getProjects, type Project } from "@/api/projectApi";
 import { getTasks, type Task } from "@/api/taskApi";
 
 import {
+  exportReportCSV,
+  exportReportPDF,
+} from "@/lib/reportExport";
+
+import {
   FolderKanban,
   ListTodo,
   CircleCheck,
-  Clock,
-  ArrowUpRight,
-  Plus,
-  CalendarDays,
   Activity,
+  Plus,
 } from "lucide-react";
+
+import {
+  type DateRange,
+  filterTasksByDateRange,
+  isCompleted,
+  getOverdueTasks,
+  buildTrend,
+  getPriorityData,
+  getProjectProgress,
+  getTaskStatuses,
+  getProgressGradient,
+} from "@/utils/dashboardUtils";
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dateRange, setDateRange] =
+    useState<DateRange>("30days");
 
+  // Fetch dashboard data
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -41,7 +64,10 @@ export default function DashboardPage() {
         setProjects(projectResult.data || []);
         setTasks(taskResult.data || []);
       } catch (error) {
-        console.error("Dashboard data loading failed:", error);
+        console.error(
+          "Dashboard data loading failed:",
+          error
+        );
       } finally {
         setLoading(false);
       }
@@ -50,6 +76,7 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, []);
 
+  // Overall project statistics
   const activeProjects = projects.filter(
     (project) => project.status === "In Progress"
   ).length;
@@ -58,18 +85,85 @@ export default function DashboardPage() {
     (project) => project.status === "Completed"
   ).length;
 
-  const completedTasks = tasks.filter(
-    (task) => task.status === "Completed" || task.status === "Done"
+  // Overall task statistics
+  const completedTasks = tasks.filter((task) =>
+    isCompleted(task.status)
   ).length;
 
   const inProgressTasks = tasks.filter(
     (task) => task.status === "In Progress"
   ).length;
 
-  const todoTasks = tasks.filter(
-    (task) => task.status === "To Do"
+  // Filter report tasks
+  const reportTasks = useMemo(
+    () => filterTasksByDateRange(tasks, dateRange),
+    [tasks, dateRange]
+  );
+
+  // Report statistics
+  const reportCompleted = reportTasks.filter((task) =>
+    isCompleted(task.status)
   ).length;
 
+  const reportInProgress = reportTasks.filter(
+    (task) => task.status === "In Progress"
+  ).length;
+
+  const reportOverdue = getOverdueTasks(reportTasks).length;
+
+  const completionRate = reportTasks.length
+    ? Math.round(
+        (reportCompleted / reportTasks.length) * 100
+      )
+    : 0;
+
+  // Export reports
+  const reportSummary = {
+    totalTasks: reportTasks.length,
+    completedTasks: reportCompleted,
+    inProgressTasks: reportInProgress,
+    overdueTasks: reportOverdue,
+    completionRate,
+  };
+
+  const handleExportCSV = () => {
+    exportReportCSV(
+      reportTasks,
+      projects,
+      reportSummary
+    );
+  };
+
+  const handleExportPDF = () => {
+    exportReportPDF(
+      reportTasks,
+      projects,
+      reportSummary
+    );
+  };
+
+  // Analytics calculations
+  const priorityData = useMemo(
+    () => getPriorityData(reportTasks),
+    [reportTasks]
+  );
+
+  const trendData = useMemo(
+    () => buildTrend(reportTasks, dateRange),
+    [reportTasks, dateRange]
+  );
+
+  const maxTrendCount = Math.max(
+    ...trendData.map((item) => item.count),
+    1
+  );
+
+  const projectProgress = useMemo(
+    () => getProjectProgress(projects, reportTasks),
+    [projects, reportTasks]
+  );
+
+  // Main dashboard statistics
   const stats = [
     {
       title: "Total Projects",
@@ -83,265 +177,131 @@ export default function DashboardPage() {
       value: activeProjects,
       description: "Currently in progress",
       icon: Activity,
-      color: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+      color:
+        "bg-amber-500/10 text-amber-600 dark:text-amber-400",
     },
     {
       title: "Completed Projects",
       value: completedProjects,
       description: "Successfully completed",
       icon: CircleCheck,
-      color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+      color:
+        "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
     },
     {
       title: "Total Tasks",
       value: tasks.length,
       description: "Tasks across projects",
       icon: ListTodo,
-      color: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
+      color:
+        "bg-violet-500/10 text-violet-600 dark:text-violet-400",
     },
   ];
 
-  const taskTotal = tasks.length || 1;
+  // Task overview
+  const taskStatuses = useMemo(
+    () => getTaskStatuses(tasks),
+    [tasks]
+  );
 
-  const taskStatuses = [
-    {
-      name: "To Do",
-      count: todoTasks,
-      color: "bg-orange-500",
-      text: "text-orange-600 dark:text-orange-400",
-      percentage: (todoTasks / taskTotal) * 100,
-    },
-    {
-      name: "In Progress",
-      count: inProgressTasks,
-      color: "bg-amber-400",
-      text: "text-amber-600 dark:text-amber-400",
-      percentage: (inProgressTasks / taskTotal) * 100,
-    },
-    {
-      name: "Completed",
-      count: completedTasks,
-      color: "bg-emerald-500",
-      text: "text-emerald-600 dark:text-emerald-400",
-      percentage: (completedTasks / taskTotal) * 100,
-    },
-  ];
-
-  const todoPercentage = (todoTasks / taskTotal) * 100;
-  const inProgressPercentage = (inProgressTasks / taskTotal) * 100;
-  const completedPercentage = (completedTasks / taskTotal) * 100;
-
-  const todoEnd = todoPercentage;
-  const inProgressEnd = todoEnd + inProgressPercentage;
-  const completedEnd = inProgressEnd + completedPercentage;
-
-  const progressGradient = tasks.length
-    ? `conic-gradient(
-        #f97316 0% ${todoEnd}%,
-        #fbbf24 ${todoEnd}% ${inProgressEnd}%,
-        #10b981 ${inProgressEnd}% ${completedEnd}%,
-        rgba(128,128,128,0.18) ${completedEnd}% 100%
-      )`
-    : "rgba(128,128,128,0.18)";
+  const progressGradient = useMemo(
+    () => getProgressGradient(tasks),
+    [tasks]
+  );
 
   return (
     <AppLayout>
       <div className="page-enter mx-auto max-w-7xl space-y-8">
 
         {/* Header */}
-        <div className="space-y-3">
-          <PageHeader
-            title="Dashboard Overview"
-            description="Get a clear view of your projects, tasks, and team progress."
-            action={
-              <Link
-                href="/projects"
-                className="orange-button flex items-center justify-center gap-2 text-sm"
-              >
-                <Plus size={18} />
-                New Project
-              </Link>
-            }
-          />
-        </div>
-
-        {/* Statistics */}
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-          {stats.map((stat, index) => (
-            <div
-              key={stat.title}
-              style={{ animationDelay: `${index * 80}ms` }}
+        <PageHeader
+          title="Dashboard Overview"
+          description="Get a clear view of your projects, tasks, and team progress."
+          action={
+            <Link
+              href="/projects"
+              className="orange-button flex items-center justify-center gap-2 text-sm"
             >
-              <StatCard
-                title={stat.title}
-                value={loading ? "..." : stat.value}
-                description={stat.description}
-                icon={stat.icon}
-                color={stat.color}
-              />
-            </div>
-          ))}
-        </div>
+              <Plus size={18} />
+              New Project
+            </Link>
+          }
+        />
 
-        {/* Main Content */}
+        {/* Main Statistics */}
+        <DashboardStats
+          stats={stats}
+          loading={loading}
+        />
+
+        {/* Reports and Analytics */}
+        <section className="space-y-6">
+
+          <ReportsAnalytics
+            dateRange={dateRange}
+            onDateRangeChange={setDateRange}
+            loading={loading}
+            onExportCSV={handleExportCSV}
+            onExportPDF={handleExportPDF}
+          />
+
+          <AnalyticsSummary
+            loading={loading}
+            totalTasks={reportTasks.length}
+            completionRate={completionRate}
+            completedTasks={reportCompleted}
+            inProgressTasks={reportInProgress}
+            overdueTasks={reportOverdue}
+          />
+
+          {/* Task Creation Trend and Priority */}
+          <div className="grid gap-6 xl:grid-cols-3">
+
+            <TaskCreationTrend
+              loading={loading}
+              trendData={trendData}
+              maxTrendCount={maxTrendCount}
+            />
+
+            <PriorityDistribution
+              loading={loading}
+              priorityData={priorityData}
+              totalTasks={reportTasks.length}
+            />
+
+          </div>
+
+          {/* Project Progress */}
+          <ProjectProgress
+            loading={loading}
+            projects={projectProgress}
+          />
+
+        </section>
+
+        {/* Recent Projects and Task Overview */}
         <div className="grid gap-6 xl:grid-cols-3">
 
-          {/* Recent Projects */}
-          <section className="rounded-3xl border border-border bg-card p-6 shadow-xl shadow-black/5 xl:col-span-2">
-            <div className="mb-7 flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-bold text-foreground">
-                  Recent Projects
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Your latest project updates
-                </p>
-              </div>
+          <RecentProjects
+            projects={projects}
+            loading={loading}
+          />
 
-              <Link
-                href="/projects"
-                className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-semibold text-orange-500 transition hover:bg-orange-500/10"
-              >
-                View all
-                <ArrowUpRight size={16} />
-              </Link>
-            </div>
+          <TaskOverview
+            loading={loading}
+            totalTasks={tasks.length}
+            taskStatuses={taskStatuses}
+            progressGradient={progressGradient}
+          />
 
-            {loading ? (
-              <LoadingSpinner message="Loading projects..." />
-            ) : projects.length === 0 ? (
-              <EmptyState
-                title="No projects yet"
-                description="Create your first project to get started."
-              />
-            ) : (
-              <div className="space-y-3">
-                {projects.slice(0, 5).map((project) => (
-                  <div
-                    key={project.id}
-                    className="group flex flex-col justify-between gap-3 rounded-2xl border border-border bg-muted p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-500/30 hover:bg-accent sm:flex-row sm:items-center"
-                  >
-                    <div className="flex min-w-0 items-center gap-3">
-                      <div className="rounded-xl border border-orange-500/10 bg-orange-500/10 p-3 text-orange-500 transition group-hover:bg-orange-500 group-hover:text-black">
-                        <FolderKanban size={20} />
-                      </div>
-
-                      <div className="min-w-0">
-                        <h3 className="truncate font-semibold text-foreground">
-                          {project.name}
-                        </h3>
-                        <p className="mt-1 truncate text-xs text-muted-foreground">
-                          {project.description || "No description"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <StatusBadge status={project.status} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          {/* Task Overview */}
-          <section className="rounded-3xl border border-border bg-card p-6 shadow-xl shadow-black/5">
-            <div className="mb-7">
-              <h2 className="text-lg font-bold text-foreground">
-                Task Overview
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Current task progress
-              </p>
-            </div>
-
-            {/* Three-color progress circle */}
-            <div className="mb-8 flex items-center justify-center">
-              <div
-                className="relative flex h-40 w-40 items-center justify-center rounded-full p-[10px]"
-                style={{ background: progressGradient }}
-              >
-                <div className="flex h-full w-full items-center justify-center rounded-full bg-card">
-                  <div className="text-center">
-                    <p className="text-4xl font-bold text-foreground">
-                      {loading ? "..." : tasks.length}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Total Tasks
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Task status progress bars */}
-            <div className="space-y-6">
-              {taskStatuses.map((status) => (
-                <div key={status.name}>
-                  <div className="mb-2 flex justify-between text-sm">
-                    <span className="font-medium text-muted-foreground">
-                      {status.name}
-                    </span>
-                    <span className={`font-bold ${status.text}`}>
-                      {loading ? "..." : status.count}
-                    </span>
-                  </div>
-
-                  <div className="h-2 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className={`h-full rounded-full transition-all duration-700 ${status.color}`}
-                      style={{
-                        width: `${loading ? 0 : status.percentage}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <Link
-              href="/tasks"
-              className="mt-8 flex w-full items-center justify-center gap-2 rounded-full border border-orange-500/30 py-3 text-sm font-semibold text-orange-500 transition-all hover:bg-orange-500 hover:text-black"
-            >
-              View All Tasks
-              <ArrowUpRight size={17} />
-            </Link>
-          </section>
         </div>
 
         {/* Bottom Information Cards */}
-        <div className="grid gap-5 md:grid-cols-2">
+        <DashboardInfoCards
+          completedTasks={completedTasks}
+          totalTasks={tasks.length}
+        />
 
-          <div className="group flex items-center gap-4 overflow-hidden rounded-3xl border border-orange-500/20 bg-gradient-to-br from-orange-500/15 to-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40">
-            <div className="rounded-2xl bg-orange-500 p-4 text-black shadow-lg shadow-orange-500/20 transition-transform group-hover:rotate-6">
-              <CalendarDays size={26} />
-            </div>
-
-            <div>
-              <h3 className="font-bold text-foreground">
-                Stay organized
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Manage your projects and deadlines in one place.
-              </p>
-            </div>
-          </div>
-
-          <div className="group flex items-center gap-4 rounded-3xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/30">
-            <div className="rounded-2xl bg-emerald-500/10 p-4 text-emerald-600 transition-transform group-hover:scale-105 dark:text-emerald-400">
-              <Clock size={26} />
-            </div>
-
-            <div>
-              <h3 className="font-bold text-foreground">
-                Keep track of progress
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {completedTasks} tasks completed out of {tasks.length}.
-              </p>
-            </div>
-          </div>
-
-        </div>
       </div>
     </AppLayout>
   );

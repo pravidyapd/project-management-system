@@ -281,7 +281,7 @@ export default function TeamPage() {
                   filteredMembers.map((member) => (
                     <tr
                       key={member.id}
-                      className="transition-colors duration-200 hover:bg-accent"
+                      className=""
                     >
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
@@ -314,7 +314,7 @@ export default function TeamPage() {
                             type="button"
                             onClick={() => openEditModal(member)}
                             aria-label={`Edit ${member.name}`}
-                            className="rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-500"
+                            className="rounded-full border cursor-pointer border-border bg-muted p-2.5 text-muted-foreground transition hover:border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-500"
                           >
                             <Pencil size={17} />
                           </button>
@@ -323,7 +323,7 @@ export default function TeamPage() {
                             type="button"
                             onClick={() => setDeleteId(member.id)}
                             aria-label={`Delete ${member.name}`}
-                            className="rounded-full border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-500"
+                            className="rounded-full cursor-pointer border border-border bg-muted p-2.5 text-muted-foreground transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-500"
                           >
                             <Trash2 size={17} />
                           </button>
@@ -426,7 +426,7 @@ export default function TeamPage() {
             <button
               type="submit"
               disabled={saving}
-              className="orange-button disabled:cursor-not-allowed disabled:opacity-50"
+              className="orange-button disabled:cursor-not-allowed disabled:opacity-50 "
             >
               {saving
                 ? "Saving..."
